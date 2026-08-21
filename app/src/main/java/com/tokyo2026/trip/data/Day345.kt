@@ -118,7 +118,7 @@ internal val day4 = Day(
                 kana = "とうきょうディズニーランド", art = Art.DISNEY, cat = Cat.THEME,
                 area = "舞濱／浦安市", lat = 35.6329, lng = 139.8804,
                 stay = "全日", hours = "多為 9:00–21:00（住宿者提早 15 分）",
-                price = "1 Day Passport 7,900–12,400 円（6 段變動）", closed = "全年無休",
+                price = "1 Day Passport 大人 8,900–10,900 円（2026/9 區間；10/10 起最高調至 12,400 円）", closed = "全年無休",
                 booking = "官網／App 日時指定票",
                 notes = listOf(
                     "DPA 付費快速通關 1,500–2,500 円，常在開園 1 小時內售完。",
