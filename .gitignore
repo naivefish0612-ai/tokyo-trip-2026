@@ -8,3 +8,7 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# 網站建置產物與密碼
+web-build/
+web/.passphrase

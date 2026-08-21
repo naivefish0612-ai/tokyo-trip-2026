@@ -1,0 +1,268 @@
+/* 東京2026 — 行程網站。配色沿用 App 的 Material 3 色盤。 */
+
+:root {
+  --primary: #1E3A5F;
+  --on-primary: #ffffff;
+  --secondary: #E8607A;
+  --tertiary: #E0A32E;
+  --bg: #FBF7F1;
+  --on-bg: #1B1A18;
+  --surface: #ffffff;
+  --on-surface: #1B1A18;
+  --surface-variant: #EFE7DA;
+  --on-surface-variant: #4A453D;
+  --ok: #2FA85F;
+  --radius: 18px;
+  --shadow: 0 1px 3px rgba(0,0,0,.10), 0 6px 18px rgba(0,0,0,.05);
+  --tabbar: 62px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #9EC1F0;
+    --on-primary: #0B1B2E;
+    --secondary: #FF97AA;
+    --tertiary: #E0A32E;
+    --bg: #14161A;
+    --on-bg: #ECE6DE;
+    --surface: #1D2026;
+    --on-surface: #ECE6DE;
+    --surface-variant: #2A2F38;
+    --on-surface-variant: #C7C1B8;
+    --shadow: 0 1px 3px rgba(0,0,0,.5), 0 6px 18px rgba(0,0,0,.35);
+  }
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg); color: var(--on-bg);
+  font-family: system-ui, -apple-system, "Noto Sans TC", "Hiragino Sans",
+               "Microsoft JhengHei", sans-serif;
+  line-height: 1.6;
+  overscroll-behavior-y: none;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: var(--primary); }
+
+/* ---------- 解鎖畫面 ---------- */
+#lock {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: linear-gradient(160deg, #0E1B36, #2B3F7A 60%, #E9827A);
+}
+.lock-card {
+  width: 100%; max-width: 380px;
+  background: var(--surface); color: var(--on-surface);
+  border-radius: 24px; padding: 32px 26px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  text-align: center;
+}
+.lock-mark { margin-bottom: 14px; }
+.lock-card h1 { margin: 0 0 6px; font-size: 1.3rem; }
+.lock-hint { margin: 0 0 20px; font-size: .86rem; color: var(--on-surface-variant); }
+#lock-form { display: flex; flex-direction: column; gap: 12px; }
+#pass {
+  font: inherit; padding: 13px 15px;
+  border: 1.5px solid var(--surface-variant); border-radius: 13px;
+  background: var(--bg); color: var(--on-bg);
+}
+#pass:focus { outline: 2px solid var(--primary); outline-offset: 1px; border-color: transparent; }
+.remember {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .82rem; color: var(--on-surface-variant); text-align: left;
+}
+#unlock {
+  padding: 13px; border: 0; border-radius: 13px;
+  background: var(--primary); color: var(--on-primary); font-weight: 700;
+}
+#unlock:disabled { opacity: .6; }
+.lock-err { min-height: 1.2em; margin: 12px 0 0; color: var(--secondary); font-size: .85rem; }
+.lock-foot { margin: 16px 0 0; font-size: .7rem; color: var(--on-surface-variant); opacity: .75; }
+
+/* ---------- 版面 ---------- */
+#view { padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 16px); }
+
+#tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  display: flex; background: var(--surface);
+  border-top: 1px solid var(--surface-variant);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab {
+  flex: 1; border: 0; background: none;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 0 6px; color: var(--on-surface-variant); font-size: .7rem;
+}
+.tab svg { width: 23px; height: 23px; fill: currentColor; }
+.tab[aria-current="page"] { color: var(--primary); font-weight: 700; }
+
+/* ---------- 主視覺 ---------- */
+.hero { position: relative; height: 210px; overflow: hidden; }
+.hero.small { height: 130px; }
+.hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero .scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.62) 100%);
+}
+.hero .cap { position: absolute; left: 20px; bottom: 16px; right: 20px; color: #fff; }
+.hero .cap h1 { margin: 0; font-size: 1.35rem; }
+.hero .cap h2 { margin: 0; font-size: 1.05rem; }
+.hero .cap p { margin: 2px 0 0; font-size: .85rem; opacity: .92; }
+.hero .corner { position: absolute; top: 12px; right: 12px; }
+
+/* ---------- 元件 ---------- */
+.card {
+  background: var(--surface); border-radius: var(--radius);
+  margin: 12px 16px; box-shadow: var(--shadow); overflow: hidden;
+}
+.card.tap { cursor: pointer; }
+.card-pad { padding: 16px; }
+
+.card-title {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; margin-bottom: 10px;
+}
+.card-title::before {
+  content: ""; width: 4px; height: 18px; border-radius: 2px;
+  background: var(--accent, var(--primary));
+}
+
+.pill {
+  display: inline-block; padding: 4px 10px; border-radius: 999px;
+  font-size: .74rem; font-weight: 500; white-space: nowrap;
+}
+.row { display: flex; gap: 8px; align-items: center; }
+.wrap { flex-wrap: wrap; }
+.scroll-x {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar { display: none; }
+
+.section-title {
+  margin: 20px 20px 2px; font-size: 1.15rem; font-weight: 700;
+}
+
+ul.bullets { margin: 0; padding: 0; list-style: none; }
+ul.bullets li {
+  display: flex; gap: 6px; margin-bottom: 8px; font-size: .9rem; line-height: 1.55;
+}
+ul.bullets li::before { content: attr(data-b); flex: none; opacity: .85; }
+ul.bullets li:last-child { margin-bottom: 0; }
+
+.stats { display: flex; gap: 10px; margin: 16px; }
+.stat {
+  flex: 1; background: var(--surface); border-radius: 16px;
+  padding: 14px; box-shadow: var(--shadow);
+}
+.stat b { display: block; font-size: 1.3rem; }
+.stat span { font-size: .74rem; color: var(--on-surface-variant); }
+
+/* 展開／收合 */
+details.exp { background: var(--surface); }
+details.exp > summary {
+  list-style: none; cursor: pointer; padding: 16px;
+  display: flex; align-items: center; gap: 8px; font-weight: 700;
+}
+details.exp > summary::-webkit-details-marker { display: none; }
+details.exp > summary::before {
+  content: ""; width: 4px; height: 18px; border-radius: 2px;
+  background: var(--accent, var(--primary)); flex: none;
+}
+details.exp > summary .chev { margin-left: auto; transition: transform .18s; }
+details.exp[open] > summary .chev { transform: rotate(180deg); }
+details.exp .body { padding: 0 16px 16px; }
+
+/* 行程動線 */
+.timeline { padding: 4px 0; }
+.leg {
+  display: flex; gap: 10px; padding: 8px 16px;
+  font-size: .82rem; color: var(--on-surface-variant);
+}
+.leg .line { flex: none; width: 2px; background: var(--surface-variant); margin-left: 15px; }
+.stop { display: flex; gap: 12px; padding: 4px 16px 4px; }
+.stop .time {
+  flex: none; width: 46px; font-weight: 700; color: var(--primary); font-size: .86rem; padding-top: 2px;
+}
+.stop .body { flex: 1; min-width: 0; }
+.stop img, .stop .noimg {
+  width: 100%; height: 92px; object-fit: cover; border-radius: 12px; display: block;
+  background: var(--surface-variant);
+}
+
+/* 搜尋 */
+.searchbar { padding: 12px 16px 4px; }
+.searchbar input {
+  width: 100%; font: inherit; padding: 12px 14px;
+  border: 1.5px solid var(--surface-variant); border-radius: 13px;
+  background: var(--surface); color: var(--on-surface);
+}
+.searchbar input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+.chips { display: flex; gap: 7px; overflow-x: auto; padding: 10px 16px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  border: 1.5px solid var(--surface-variant); background: var(--surface);
+  border-radius: 999px; padding: 6px 13px; font-size: .8rem; white-space: nowrap;
+}
+.chip[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+
+/* 景點列 */
+.spot-row { display: flex; gap: 12px; align-items: center; padding: 10px 16px; }
+.spot-row img, .spot-row .noimg {
+  width: 66px; height: 66px; flex: none; object-fit: cover; border-radius: 13px;
+  background: var(--surface-variant);
+}
+.spot-row .meta { flex: 1; min-width: 0; }
+.spot-row .meta b { display: block; }
+.spot-row .meta small { color: var(--on-surface-variant); }
+
+/* 頂列 */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 8px; background: var(--bg);
+  border-bottom: 1px solid var(--surface-variant);
+}
+.topbar h2 { flex: 1; margin: 0; font-size: 1.02rem; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iconbtn {
+  border: 0; background: none; padding: 8px; border-radius: 50%;
+  display: inline-flex; line-height: 0;
+}
+.iconbtn svg { width: 23px; height: 23px; fill: currentColor; }
+.iconbtn:hover { background: var(--surface-variant); }
+
+/* 動作按鈕 */
+.actions { display: flex; gap: 10px; padding: 16px; }
+.btn {
+  flex: 1; border: 0; border-radius: 14px; padding: 11px 8px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: .88rem; font-weight: 600; text-decoration: none;
+  background: var(--primary); color: var(--on-primary);
+}
+.btn.outline { background: transparent; color: var(--primary); box-shadow: inset 0 0 0 1.5px var(--primary); }
+.btn.gold { background: var(--tertiary); color: #1B1A18; }
+.btn svg { width: 17px; height: 17px; fill: currentColor; }
+
+/* 清單 */
+.check-item { display: flex; gap: 12px; padding: 12px 16px; align-items: flex-start; }
+.check-item .box {
+  flex: none; width: 22px; height: 22px; border-radius: 6px; margin-top: 2px;
+  border: 2px solid var(--on-surface-variant); display: grid; place-items: center;
+}
+.check-item[aria-checked="true"] .box { background: var(--ok); border-color: var(--ok); }
+.check-item[aria-checked="true"] .box svg { display: block; }
+.check-item .box svg { display: none; width: 14px; height: 14px; fill: #fff; }
+.check-item[aria-checked="true"] .txt { text-decoration: line-through; opacity: .55; }
+.check-item .txt { font-size: .9rem; }
+
+.bar { height: 8px; border-radius: 4px; background: var(--primary); opacity: .78; }
+.bar-track { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-variant); overflow: hidden; }
+
+.foot { padding: 20px; font-size: .78rem; color: var(--on-surface-variant); }
+.credit { padding: 6px 20px 0; font-size: .72rem; color: var(--on-surface-variant); }

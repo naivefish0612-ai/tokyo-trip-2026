@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+  攻擊面最小化：只允許同源資源，無任何第三方來源，
+  禁止 inline script／eval、禁止被 iframe 嵌入、禁止表單送出。
+-->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'none';
+  script-src 'self';
+  style-src 'self';
+  img-src 'self' data:;
+  connect-src 'self';
+  font-src 'self';
+  base-uri 'none';
+  form-action 'none';
+  frame-ancestors 'none';
+  object-src 'none';
+  manifest-src 'self'">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0E1B36">
+<title>行程</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230E1B36'/><circle cx='16' cy='9' r='3' fill='%23FF5C7A'/><path d='M16 12 L21 24 L16 21 L11 24 Z' fill='%23FFD166'/></svg>">
+</head>
+<body>
+
+<!-- 解鎖畫面：資料在通過這一關之前都還是密文 -->
+<div id="lock">
+  <div class="lock-card">
+    <div class="lock-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="52" height="52">
+        <rect width="32" height="32" rx="7" fill="#0E1B36"/>
+        <circle cx="16" cy="9" r="3" fill="#FF5C7A"/>
+        <path d="M16 12 L21 24 L16 21 L11 24 Z" fill="#FFD166"/>
+      </svg>
+    </div>
+    <h1>行程已加密</h1>
+    <p class="lock-hint">輸入密碼以在此裝置上解密。資料不會離開這個瀏覽器。</p>
+    <form id="lock-form" autocomplete="off">
+      <input id="pass" type="password" placeholder="密碼" autocomplete="current-password"
+             spellcheck="false" autocapitalize="none" aria-label="密碼">
+      <label class="remember">
+        <input type="checkbox" id="remember"> 在此裝置記住密碼
+      </label>
+      <button type="submit" id="unlock">解鎖</button>
+    </form>
+    <p id="lock-err" class="lock-err" role="alert"></p>
+    <p class="lock-foot">AES-256-GCM ・ PBKDF2-SHA256 600,000 次迭代</p>
+  </div>
+</div>
+
+<!-- 主畫面 -->
+<div id="app" hidden>
+  <main id="view"></main>
+  <nav id="tabs">
+    <button data-route="#/home" class="tab">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3V2h-2v2H9V2H7zm13 8v10H4V10h16z"/></svg>
+      <span>行程</span>
+    </button>
+    <button data-route="#/spots" class="tab">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm3.5 6.5-2 5-5 2 2-5 5-2z"/></svg>
+      <span>景點</span>
+    </button>
+    <button data-route="#/checklist" class="tab">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-9 14-4-4 1.4-1.4L10 14.2l6.6-6.6L18 9l-8 8z"/></svg>
+      <span>準備</span>
+    </button>
+  </nav>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
