@@ -16,9 +16,10 @@
   font-src 'self';
   base-uri 'none';
   form-action 'none';
-  frame-ancestors 'none';
   object-src 'none';
   manifest-src 'self'">
+<!-- frame-ancestors 依規格只有經 HTTP 標頭下達才有效，而 GitHub Pages 無法自訂標頭；
+     防點擊劫持改由 app.js 開頭的 frame guard 負責。 -->
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">

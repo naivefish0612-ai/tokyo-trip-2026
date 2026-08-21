@@ -35,6 +35,13 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* 圖片一律不得超出容器；未套用尺寸規則時也不會撐破版面 */
+img { max-width: 100%; }
+
+/* SVG 沒有明確尺寸時會以預設值撐破版面（.chev 就曾如此）。
+   這是保底值，個別規則仍可覆寫。 */
+svg { width: 22px; height: 22px; flex: none; }
+
 html, body {
   margin: 0; padding: 0;
   background: var(--bg); color: var(--on-bg);
@@ -62,6 +69,7 @@ a { color: var(--primary); }
   text-align: center;
 }
 .lock-mark { margin-bottom: 14px; }
+.lock-mark svg { width: 52px; height: 52px; }   /* 覆寫全域 svg 保底尺寸 */
 .lock-card h1 { margin: 0 0 6px; font-size: 1.3rem; }
 .lock-hint { margin: 0 0 20px; font-size: .86rem; color: var(--on-surface-variant); }
 #lock-form { display: flex; flex-direction: column; gap: 12px; }
@@ -103,7 +111,8 @@ a { color: var(--primary); }
 /* ---------- 主視覺 ---------- */
 .hero { position: relative; height: 210px; overflow: hidden; }
 .hero.small { height: 130px; }
-.hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 有照片時是 <img>，沒有照片時是漸層的 <div class="noimg">，兩者都要撐滿 */
+.hero img, .hero .noimg { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hero .scrim {
   position: absolute; inset: 0;
   background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.62) 100%);
@@ -173,7 +182,10 @@ details.exp > summary::before {
   content: ""; width: 4px; height: 18px; border-radius: 2px;
   background: var(--accent, var(--primary)); flex: none;
 }
-details.exp > summary .chev { margin-left: auto; transition: transform .18s; }
+details.exp > summary .chev {
+  margin-left: auto; flex: none; width: 22px; height: 22px;
+  fill: var(--on-surface-variant); transition: transform .18s;
+}
 details.exp[open] > summary .chev { transform: rotate(180deg); }
 details.exp .body { padding: 0 16px 16px; }
 
@@ -191,6 +203,12 @@ details.exp .body { padding: 0 16px 16px; }
 .stop .body { flex: 1; min-width: 0; }
 .stop img, .stop .noimg {
   width: 100%; height: 92px; object-fit: cover; border-radius: 12px; display: block;
+  background: var(--surface-variant);
+}
+
+/* 首頁日卡片裡的橫向縮圖（96px 寬的格子） */
+.thumb {
+  width: 100%; height: 60px; object-fit: cover; border-radius: 12px; display: block;
   background: var(--surface-variant);
 }
 

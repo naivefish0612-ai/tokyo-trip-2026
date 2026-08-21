@@ -6,10 +6,31 @@
  */
 'use strict';
 
+/* 防點擊劫持。CSP 的 frame-ancestors 只有透過 HTTP 標頭才有效，
+ * 而 GitHub Pages 不允許自訂標頭，因此改在此處擋下被嵌入的情況。 */
+if (window.top !== window.self) {
+  document.documentElement.textContent = '';
+  throw new Error('framed');
+}
+
 var TRIP = null;
 var KEY_PREFIX = 'tokyo2026:';
 
 /* ---------- DOM 工具（XSS-safe by construction） ---------- */
+
+/* 透過 CSSOM 逐項套用樣式。
+ * 不可改用 setAttribute('style', ...)：CSP 的 style-src 'self' 會封鎖 style 屬性，
+ * 導致所有動態樣式失效、圖片以原生尺寸撐破版面。CSSOM 則不受該指令限制。 */
+function setStyle(node, css) {
+  css.split(';').forEach(function (decl) {
+    var i = decl.indexOf(':');
+    if (i < 0) return;
+    var prop = decl.slice(0, i).trim();
+    var val = decl.slice(i + 1).trim();
+    if (prop) node.style.setProperty(prop, val);
+  });
+}
+
 function el(tag, attrs, kids) {
   var n = document.createElement(tag);
   if (attrs) Object.keys(attrs).forEach(function (k) {
@@ -17,7 +38,7 @@ function el(tag, attrs, kids) {
     if (v === null || v === undefined || v === false) return;
     if (k === 'class') n.className = v;
     else if (k === 'text') n.textContent = v;
-    else if (k === 'style') n.setAttribute('style', v);
+    else if (k === 'style') setStyle(n, v);
     else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), v);
     else n.setAttribute(k, v === true ? '' : v);
   });

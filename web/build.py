@@ -29,10 +29,33 @@ def make_passphrase(n=16):
     return ''.join(secrets.choice(ALPHABET) for _ in range(n))
 
 
+def check_css_classes():
+    """app.js 用到卻沒在 CSS 定義的 class 會讓圖片以原生尺寸撐破版面。
+
+    `.thumb` 就是這樣漏掉的：它是以 photoEl(spot, 'thumb') 的參數傳入，
+    不是寫成 class: '...'，掃描時很容易忽略。
+    """
+    import re
+    js = open(os.path.join(WEB, 'app.js'), encoding='utf-8').read()
+    css = open(os.path.join(WEB, 'style.css'), encoding='utf-8').read()
+    used = set()
+    for m in re.findall(r"class:\s*'([^']+)'", js):
+        used.update(m.split())
+    for m in re.findall(r"photoEl\([^,)]+,\s*'([^']+)'", js):   # 以參數傳入的 class
+        used.update(m.split())
+    defined = set(re.findall(r'\.([A-Za-z][\w-]*)', css))
+    missing = sorted(c for c in used if c not in defined)
+    if missing:
+        sys.exit('CSS 缺少這些 class（會導致版面跑掉）: ' + ', '.join(missing))
+    return len(used)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--passphrase')
     args = ap.parse_args()
+
+    n_cls = check_css_classes()
 
     if not os.path.exists(DATA):
         sys.exit('缺少 %s，請先執行：./gradlew testDebugUnitTest --tests "*ExportWebData*"' % DATA)
@@ -43,7 +66,9 @@ def main():
     trip = json.load(open(DATA, encoding='utf-8'))
 
     # ---- 照片改名：sha256(salt + spotId) 前 16 hex，對應關係只存在於密文內 ----
-    photo_salt = secrets.token_bytes(16)
+    # salt 由密碼推導而非隨機產生，這樣同一組密碼重建時檔名不變，
+    # 否則每次建置都會讓 37 張照片全部改名、灌爆 git 歷史。
+    photo_salt = hashlib.sha256(b'photo-salt|' + passphrase.encode('utf-8')).digest()[:16]
     out_photos = os.path.join(DOCS, 'p')
     shutil.rmtree(out_photos, ignore_errors=True)
     os.makedirs(out_photos, exist_ok=True)
@@ -100,6 +125,7 @@ def main():
         with open(os.path.join(WEB, '.passphrase'), 'w') as f:
             f.write(passphrase + '\n')
 
+    print('CSS 檢查 : %d 個 class 全部有定義' % n_cls)
     print('明文     : %d bytes' % len(plaintext))
     print('密文     : %d bytes' % len(ct))
     print('照片     : %d 張 -> docs/p/' % renamed)
