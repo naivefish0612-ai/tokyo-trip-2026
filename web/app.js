@@ -63,13 +63,32 @@ var ICON = {
   back: 'M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20v-2z',
   heart: 'M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21z',
   heartOff: 'M12 21s-8-4.9-8-10.4A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 3.6C20 16.1 12 21 12 21zm0-2.7c2.3-1.6 6-4.8 6-7.7A2.6 2.6 0 0 0 12 9.4 2.6 2.6 0 0 0 6 10.6c0 2.9 3.7 6.1 6 7.7z',
-  check: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15-5-5 1.4-1.4L10 14.2l7.6-7.6L19 8l-9 9z',
+  check: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm-1.2 11.4L7 11.6l1.4-1.4 2.4 2.4 4.8-4.8L17 9.2z',
   circle: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16z',
   nav: 'M12 2 3 21l9-4 9 4L12 2z',
   map: 'M20 4l-6 2-4-2-6 2v14l6-2 4 2 6-2V4zm-6 14.5-4-2V5.5l4 2v11z',
   web: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7.9 9h-3a15 15 0 0 0-1.2-5.2A8 8 0 0 1 19.9 11zM12 4.2c.8 1.1 1.5 3 1.7 6.8h-3.4c.2-3.8.9-5.7 1.7-6.8zM4.1 13h3a15 15 0 0 0 1.2 5.2A8 8 0 0 1 4.1 13zm3-2h-3a8 8 0 0 1 4.2-5.2A15 15 0 0 0 7.1 11zm4.9 8.8c-.8-1.1-1.5-3-1.7-6.8h3.4c-.2 3.8-.9 5.7-1.7 6.8zm3.7-.6a15 15 0 0 0 1.2-5.2h3a8 8 0 0 1-4.2 5.2z',
   chev: 'M12 15.4 6.6 10 8 8.6l4 4 4-4L17.4 10z',
-  tick: 'M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'
+  tick: 'M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z',
+  clock: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm1 3h-2v6l4.4 2.6.9-1.6-3.3-1.9z',
+  yen: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zM8.4 7h1.9l1.7 2.9L13.7 7h1.9l-2.2 3.7h1.7v1.2h-2.3v.9h2.3v1.2h-2.3V16h-1.6v-2h-2.3v-1.2h2.3v-.9H8.6v-1.2h1.7L8.4 7z',
+  hourglass: 'M6 2h12v5l-4 5 4 5v5H6v-5l4-5-4-5V2zm2.6 3.6L12 9.4l3.4-3.8H8.6zM12 14.6l-3.4 3.8h6.8L12 14.6z',
+  closed: 'M7 2v2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3V2h-2v2H9V2H7zm13 8v10H4V10h16zM8.4 12 7 13.4 10.6 17 17 10.6 15.6 9.2l-5 5-2.2-2.2z',
+  ticket: 'M4 5h16a1 1 0 0 1 1 1v3.5a2.5 2.5 0 0 0 0 5V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3.5a2.5 2.5 0 0 0 0-5V6a1 1 0 0 1 1-1zm10 2v2h2V7h-2zm0 4v2h2v-2h-2zm0 4v2h2v-2h-2z',
+  bulb: 'M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2zM9.5 20h5a1 1 0 0 1 0 2h-5a1 1 0 0 1 0-2z',
+  food: 'M7 2v8a3 3 0 0 0 2 2.8V22h2V12.8A3 3 0 0 0 13 10V2h-1.6v6.4h-1.2V2H8.6v6.4H7.4V2H7zm10 0c-1.7 0-3 2.7-3 6 0 2.5.8 4.4 2 5.2V22h2V2h-1z',
+  warn: 'M12 2 1.5 20.5h21L12 2zm0 5 6.6 11.5H5.4L12 7zm-1 3.6v4.2h2v-4.2h-2zm0 5.4v2h2v-2h-2z',
+  alert: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm-1 3h2v6h-2V7zm0 8h2v2h-2v-2z',
+  close: 'M19 6.4 17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z'
+};
+
+/* 提示類別：每一類有自己的圖示與色系，取代先前的「！」「◆」裸字元 */
+var KIND = {
+  note:  { icon: ICON.bulb,  color: 'var(--tertiary)', label: '在地達人筆記' },
+  eat:   { icon: ICON.food,  color: 'var(--eat)',      label: '必吃必買' },
+  warn:  { icon: ICON.warn,  color: 'var(--secondary)', label: '注意與避雷' },
+  tip:   { icon: ICON.bulb,  color: 'var(--tertiary)', label: '今日小訣竅' },
+  alert: { icon: ICON.alert, color: 'var(--secondary)', label: '今日提醒' }
 };
 
 /* ---------- 本機狀態（打卡／收藏） ---------- */
@@ -118,9 +137,61 @@ function photoEl(spot, cls) {
     style: 'background:linear-gradient(150deg,hsl(' + hue + ',42%,38%),hsl(' + ((hue + 45) % 360) + ',48%,58%))'
   });
 }
+/** 打卡進度環。載入時由 0 掃到實際比例。 */
+function ring(done, total) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var C = 2 * Math.PI * 20;
+  var s = document.createElementNS(ns, 'svg');
+  s.setAttribute('viewBox', '0 0 48 48');
+  s.setAttribute('class', 'ring');
+  ['track', 'fill'].forEach(function (cls) {
+    var c = document.createElementNS(ns, 'circle');
+    c.setAttribute('cx', '24'); c.setAttribute('cy', '24'); c.setAttribute('r', '20');
+    c.setAttribute('class', cls);
+    if (cls === 'fill') {
+      c.style.setProperty('stroke-dasharray', C.toFixed(1));
+      c.style.setProperty('stroke-dashoffset', C.toFixed(1));
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          c.style.setProperty('stroke-dashoffset', (C * (1 - (total ? done / total : 0))).toFixed(1));
+        });
+      });
+    }
+    s.appendChild(c);
+  });
+  var t = document.createElementNS(ns, 'text');
+  t.setAttribute('x', '24'); t.setAttribute('y', '24');
+  t.setAttribute('class', 'rt');
+  t.textContent = done + '/' + total;
+  s.appendChild(t);
+  return el('div', { class: 'ringwrap' }, [s]);
+}
+
 function pill(text, bg, fg) {
   return el('span', { class: 'pill', text: text, style: 'background:' + bg + ';color:' + fg });
 }
+/** 有色系圖示的提示清單。取代先前用「！」「◆」等字元當項目符號的做法。 */
+function noteList(items, kind) {
+  var k = KIND[kind] || KIND.note;
+  return el('ul', { class: 'notes' }, items.map(function (t) {
+    var ic = svgIcon(k.icon, 'ni');
+    ic.style.setProperty('fill', k.color);
+    return el('li', {}, [ic, el('span', { text: t })]);
+  }));
+}
+
+/** 圖示＋標籤＋內容的三欄格線，比長句條列好掃。 */
+function factGrid(rows) {
+  return el('dl', { class: 'facts' }, rows.reduce(function (acc, r) {
+    if (!r.value) return acc;
+    var ic = svgIcon(r.icon, 'fi');
+    if (r.color) ic.style.setProperty('fill', r.color);
+    acc.push(el('dt', {}, [ic, el('span', { text: r.label })]));
+    acc.push(el('dd', { text: r.value }));
+    return acc;
+  }, []));
+}
+
 function bullets(items, mark) {
   return el('ul', { class: 'bullets' }, items.map(function (t) {
     return el('li', { 'data-b': mark || '・', text: t });
@@ -132,15 +203,22 @@ function card(titleText, accent, bodyNodes, opts) {
       .concat(bodyNodes));
   return el('div', Object.assign({ class: 'card' }, opts || {}), [body]);
 }
-function expandable(titleText, count, accent, bodyNodes, open) {
-  return el('details', { class: 'card exp', style: '--accent:' + accent, open: !!open }, [
+/** 可收合區塊。標題左側以該類別的圖示與色系標示，一眼就能分辨提示種類。 */
+function expandable(kind, count, bodyNodes, open) {
+  var k = KIND[kind] || KIND.note;
+  var head = svgIcon(k.icon, 'eh');
+  head.style.setProperty('fill', k.color);
+  var d = el('details', { class: 'card exp', open: !!open }, [
     el('summary', {}, [
-      document.createTextNode(titleText),
-      pill(String(count), 'color-mix(in srgb, ' + accent + ' 16%, transparent)', accent),
+      head,
+      el('span', { class: 'et', text: k.label }),
+      pill(String(count), 'color-mix(in srgb, ' + k.color + ' 16%, transparent)', k.color),
       svgIcon(ICON.chev, 'chev')
     ]),
     el('div', { class: 'body' }, bodyNodes)
   ]);
+  d.style.setProperty('--accent', k.color);
+  return d;
 }
 function topbar(title, actions) {
   return el('div', { class: 'topbar' }, [
@@ -158,24 +236,24 @@ function viewHome() {
 
   var frag = document.createDocumentFragment();
 
-  var heroSpot = TRIP.days[0].stops[1] ? TRIP.days[0].stops[1].spot : TRIP.days[0].stops[0].spot;
-  frag.appendChild(el('div', { class: 'hero' }, [
-    photoEl(heroSpot), el('div', { class: 'scrim' }),
+  frag.appendChild(el('div', { class: 'hero illus' }, [
+    el('img', { src: 'hero.svg', alt: '', decoding: 'async' }),
+    el('div', { class: 'scrim' }),
     el('div', { class: 'cap' }, [el('h1', { text: TRIP.title }), el('p', { text: TRIP.subtitle })])
   ]));
 
   frag.appendChild(el('div', { class: 'stats' }, [
     el('div', { class: 'stat tap', onclick: function () { go('#/checklist'); } },
-      [el('b', { text: done + '/' + ids.length, style: 'color:var(--primary)' }), el('span', { text: '打卡' })]),
+      [ring(done, ids.length), el('span', { text: '打卡' })]),
     el('div', { class: 'stat' },
-      [el('b', { text: String(ids.length), style: 'color:var(--tertiary)' }), el('span', { text: '景點' })]),
+      [el('b', { class: 'accent-gold', text: String(ids.length) }), el('span', { text: '景點' })]),
     el('div', { class: 'stat' },
-      [el('b', { text: TRIP.hotels.length + ' 家', style: 'color:var(--secondary)' }), el('span', { text: '住宿' })])
+      [el('b', { class: 'accent-pink', text: TRIP.hotels.length + ' 家' }), el('span', { text: '住宿' })])
   ]));
 
   frag.appendChild(card('航班', 'var(--secondary)', [
     bullets(['去程　' + TRIP.flightOut, '回程　' + TRIP.flightBack]),
-    el('p', { class: 'foot', style: 'padding:10px 0 0', text: '去程 20:50 落地，當天不排景點；回程 17:55 起飛，Day 8 中午就得離開市區。' })
+    el('p', { class: 'hint', text: '落地已晚，Day 1 不排景點；Day 8 中午須離開市區。' })
   ]));
 
   frag.appendChild(el('div', { class: 'section-title', text: '每日行程' }));
@@ -192,7 +270,7 @@ function viewHome() {
       ]),
       el('div', { class: 'card-pad' }, [
         el('div', { style: 'font-weight:700', text: d.theme }),
-        el('div', { style: 'font-size:.84rem;color:var(--on-surface-variant)', text: d.summary }),
+        el('div', { class: 'dsum clamp2', text: d.summary }),
         el('div', { class: 'scroll-x', style: 'margin-top:10px' }, [
           pill(d.stops.length + ' 站', 'var(--surface-variant)', 'var(--on-surface-variant)'),
           pill('移動 ' + d.moveMinutes + ' 分', 'color-mix(in srgb, var(--primary) 12%, transparent)', 'var(--primary)'),
@@ -215,10 +293,14 @@ function viewHome() {
   frag.appendChild(card('每日移動時間', 'var(--primary)', TRIP.days.map(function (d) {
     // 以最長的一天等比縮放，寬度恆落在 (0,100%]
     var pct = Math.max(4, Math.round(d.moveMinutes / maxMove * 100));
-    return el('div', { class: 'row', style: 'margin-bottom:8px' }, [
-      el('span', { style: 'width:34px;font-weight:700;color:var(--primary);font-size:.8rem', text: 'D' + d.n }),
-      el('div', { class: 'bar-track' }, [el('div', { class: 'bar', style: 'width:' + pct + '%' })]),
-      el('span', { style: 'font-size:.78rem;color:var(--on-surface-variant);width:52px;text-align:right', text: d.moveMinutes + ' 分' })
+    var bar = el('div', { class: 'bar' });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { bar.style.setProperty('width', pct + '%'); });
+    });
+    return el('div', { class: 'barrow tap', onclick: function () { go('#/day/' + d.n); } }, [
+      el('span', { class: 'blabel', text: 'D' + d.n }),
+      el('div', { class: 'bar-track' }, [bar]),
+      el('span', { class: 'bval', text: d.moveMinutes + ' 分' })
     ]);
   })));
 
@@ -227,7 +309,7 @@ function viewHome() {
 
   frag.appendChild(el('p', {
     class: 'foot',
-    text: '資料查證於 2026/8：景點營業時間、票價可能再變動，出發前請點各景點的「官網」按鈕確認。照片來自 Wikimedia Commons（CC／公有領域）。'
+    text: '資料查證於 2026/8，出發前請以各景點官網為準。照片來源 Wikimedia Commons（CC／公有領域）。'
   }));
   return frag;
 }
@@ -240,7 +322,7 @@ function viewDay(n) {
 
   frag.appendChild(el('div', { class: 'hero small' }, [
     photoEl(d.stops[d.stops.length - 1].spot), el('div', { class: 'scrim' }),
-    el('div', { class: 'cap' }, [el('h2', { text: d.theme }), el('p', { text: d.summary })])
+    el('div', { class: 'cap' }, [el('h2', { text: d.theme }), el('p', { class: 'clamp2', text: d.summary })])
   ]));
 
   frag.appendChild(el('div', { class: 'scroll-x', style: 'padding:12px 16px 0' }, [
@@ -248,7 +330,7 @@ function viewDay(n) {
     pill('移動 ' + d.moveMinutes + ' 分', 'color-mix(in srgb, var(--primary) 12%, transparent)', 'var(--primary)')
   ]));
 
-  if (d.alerts.length) frag.appendChild(card('今日提醒', 'var(--secondary)', [bullets(d.alerts, '！')]));
+  if (d.alerts.length) frag.appendChild(expandable('alert', d.alerts.length, [noteList(d.alerts, 'alert')], true));
 
   var tl = el('div', { class: 'timeline' });
   d.stops.forEach(function (st) {
@@ -279,7 +361,7 @@ function viewDay(n) {
     tl
   ]));
 
-  if (d.tips.length) frag.appendChild(expandable('今日小訣竅', d.tips.length, 'var(--tertiary)', [bullets(d.tips)], true));
+  if (d.tips.length) frag.appendChild(expandable('tip', d.tips.length, [noteList(d.tips, 'tip')]));
   frag.appendChild(card('今晚住宿', 'var(--primary)', [
     el('div', { style: 'font-weight:700', text: d.hotelName }),
     el('div', { style: 'font-size:.85rem;color:var(--on-surface-variant)', text: d.hotelNote })
@@ -316,8 +398,14 @@ function viewSpot(id) {
   chkBtn.addEventListener('click', function () { Store.toggle(spot.id); paintChk(); });
   paintFav(); paintChk();
 
+  var c0 = TRIP.photoCredits[spot.id];
   frag.appendChild(topbar(spot.nameZh, [favBtn, chkBtn]));
-  frag.appendChild(el('div', { class: 'hero' }, [
+  frag.appendChild(el('div', {
+    class: 'hero' + (spot.photo ? ' zoomable' : ''),
+    onclick: function () {
+      if (spot.photo) lightbox(spot.photo, spot.nameZh, c0 ? '照片：' + c0.author + '／' + c0.license : null);
+    }
+  }, [
     photoEl(spot), el('div', { class: 'scrim' }),
     el('div', { class: 'cap' }, [el('h2', { text: spot.nameJa }), el('p', { text: spot.kana })]),
     day ? el('div', { class: 'corner' }, [pill('Day ' + day.n + '・' + day.date, 'rgba(0,0,0,.45)', '#fff')]) : null
@@ -333,13 +421,17 @@ function viewSpot(id) {
     [svgIcon(ICON.web), document.createTextNode('官網')]));
   frag.appendChild(el('div', { class: 'actions' }, acts));
 
-  var key = ['時間　' + spot.hours, '費用　' + spot.price, '停留　' + spot.stay + '　｜　公休　' + spot.closed];
-  if (spot.booking) key.push('預約　' + spot.booking);
-  frag.appendChild(card('重點', 'var(--primary)', [bullets(key)]));
+  frag.appendChild(card('重點', 'var(--primary)', [factGrid([
+    { icon: ICON.clock, label: '時間', value: spot.hours, color: 'var(--primary)' },
+    { icon: ICON.yen, label: '費用', value: spot.price, color: 'var(--eat)' },
+    { icon: ICON.hourglass, label: '停留', value: spot.stay, color: 'var(--primary)' },
+    { icon: ICON.closed, label: '公休', value: spot.closed, color: 'var(--secondary)' },
+    { icon: ICON.ticket, label: '預約', value: spot.booking, color: 'var(--tertiary)' }
+  ])]));
 
-  if (spot.notes.length) frag.appendChild(expandable('在地達人筆記', spot.notes.length, 'var(--tertiary)', [bullets(spot.notes)], true));
-  if (spot.eats.length) frag.appendChild(expandable('必吃必買', spot.eats.length, '#E0A32E', [bullets(spot.eats, '◆')]));
-  if (spot.warns.length) frag.appendChild(expandable('注意與避雷', spot.warns.length, 'var(--secondary)', [bullets(spot.warns, '！')]));
+  if (spot.notes.length) frag.appendChild(expandable('note', spot.notes.length, [noteList(spot.notes, 'note')], true));
+  if (spot.eats.length) frag.appendChild(expandable('eat', spot.eats.length, [noteList(spot.eats, 'eat')]));
+  if (spot.warns.length) frag.appendChild(expandable('warn', spot.warns.length, [noteList(spot.warns, 'warn')]));
 
   var c = TRIP.photoCredits[spot.id];
   if (c) frag.appendChild(el('p', { class: 'credit' }, [
@@ -482,12 +574,32 @@ function viewChecklist() {
   return frag;
 }
 
+/* ---------- 照片全螢幕檢視 ---------- */
+function lightbox(src, alt, credit) {
+  var box = el('div', { class: 'lb', role: 'dialog', 'aria-label': alt }, [
+    el('button', { class: 'lb-x iconbtn', 'aria-label': '關閉' }, [svgIcon(ICON.close)]),
+    el('img', { src: src, alt: alt }),
+    credit ? el('p', { class: 'lb-c', text: credit }) : null
+  ]);
+  function close() {
+    box.classList.remove('on');
+    document.removeEventListener('keydown', onKey);
+    setTimeout(function () { box.remove(); }, 200);
+  }
+  function onKey(e) { if (e.key === 'Escape') close(); }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', onKey);
+  document.body.appendChild(box);
+  requestAnimationFrame(function () { box.classList.add('on'); });
+}
+
 /* ---------- 路由 ---------- */
 function go(hash) { location.hash = hash; }
 function render() {
   var h = location.hash || '#/home';
   var view = document.getElementById('view');
   view.textContent = '';
+  view.classList.remove('in');
   var node, tab = null;
   if (h.indexOf('#/day/') === 0) node = viewDay(parseInt(h.slice(6), 10) || 1);
   else if (h.indexOf('#/spot/') === 0) node = viewSpot(h.slice(7));
@@ -500,6 +612,7 @@ function render() {
     else b.removeAttribute('aria-current');
   });
   window.scrollTo(0, 0);
+  requestAnimationFrame(function () { view.classList.add('in'); });
 }
 
 /* ---------- 啟動 ---------- */

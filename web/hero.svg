@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520" role="img" aria-label="東京行程主視覺插畫">
+  <defs>
+    <!-- 和紙質感 -->
+    <filter id="washi" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0"/>
+      <feComponentTransfer result="grain">
+        <feFuncA type="linear" slope="0.055"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="grain" mode="multiply"/>
+    </filter>
+    <!-- 手繪筆觸的細微抖動 -->
+    <filter id="ink" x="-3%" y="-3%" width="106%" height="106%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="3" seed="3" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="3.2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#F7E6D2"/>
+      <stop offset="0.45" stop-color="#F3D9C8"/>
+      <stop offset="1"    stop-color="#EBC7BE"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7FA9B8"/>
+      <stop offset="1" stop-color="#4E7E93"/>
+    </linearGradient>
+
+    <!-- 青海波 -->
+    <pattern id="seigaiha" width="60" height="30" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#EDE0CE" stroke-width="2" opacity="0.5">
+        <path d="M-30,30 a30,30 0 0,1 60,0"/>
+        <path d="M0,30  a30,30 0 0,1 60,0"/>
+        <path d="M30,30 a30,30 0 0,1 60,0"/>
+        <path d="M-30,30 a20,20 0 0,1 60,0"/>
+        <path d="M0,30  a20,20 0 0,1 60,0"/>
+        <path d="M30,30 a20,20 0 0,1 60,0"/>
+        <path d="M-30,30 a10,10 0 0,1 60,0"/>
+        <path d="M0,30  a10,10 0 0,1 60,0"/>
+        <path d="M30,30 a10,10 0 0,1 60,0"/>
+      </g>
+    </pattern>
+  </defs>
+
+  <g filter="url(#washi)">
+    <rect width="1200" height="520" fill="url(#sky)"/>
+
+    <!-- 日の丸 -->
+    <circle cx="905" cy="150" r="86" fill="#E2604F" opacity="0.9"/>
+    <circle cx="905" cy="150" r="86" fill="none" stroke="#C24A3C" stroke-width="2.5" opacity="0.45" filter="url(#ink)"/>
+
+    <!-- 霞（傳統雲霧帶） -->
+    <g fill="#FBF3E7" opacity="0.85" filter="url(#ink)">
+      <path d="M60,120 h150 a16,16 0 0,1 0,32 h-150 a16,16 0 0,1 0,-32 z"/>
+      <path d="M120,168 h210 a16,16 0 0,1 0,32 h-210 a16,16 0 0,1 0,-32 z"/>
+      <path d="M0,214  h150 a16,16 0 0,1 0,32 h-150 a16,16 0 0,1 0,-32 z"/>
+      <path d="M980,236 h180 a15,15 0 0,1 0,30 h-180 a15,15 0 0,1 0,-30 z"/>
+      <path d="M1050,284 h150 a15,15 0 0,1 0,30 h-150 a15,15 0 0,1 0,-30 z"/>
+    </g>
+
+    <!-- 遠山 -->
+    <path d="M0,352 L120,268 L196,318 L286,236 L392,340 L470,300 L540,352 Z"
+          fill="#9FB2A8" opacity="0.55" filter="url(#ink)"/>
+    <path d="M640,352 L742,282 L820,330 L900,262 L1010,344 L1090,306 L1200,352 L1200,360 L640,360 Z"
+          fill="#9FB2A8" opacity="0.45" filter="url(#ink)"/>
+
+    <!-- 富士山 -->
+    <g filter="url(#ink)">
+      <path d="M368,356 L520,164 L672,356 Z" fill="#8FA6B8"/>
+      <path d="M470,222 L520,164 L572,222 L556,232 L536,216 L516,236 L494,214 L482,230 Z" fill="#FBF6EE"/>
+      <path d="M368,356 L520,164 L672,356" fill="none" stroke="#5C7488" stroke-width="3" stroke-linejoin="round" opacity="0.55"/>
+    </g>
+
+    <!-- 城市天際線 -->
+    <g filter="url(#ink)">
+      <!-- 晴空塔 -->
+      <g stroke="#3E4A63" stroke-width="3.4" fill="none" stroke-linecap="round">
+        <path d="M198,356 L214,196"/>
+        <path d="M250,356 L234,196"/>
+        <path d="M214,196 L234,196"/>
+        <path d="M224,196 L224,150"/>
+        <path d="M206,262 h36"/>
+        <path d="M203,300 h42"/>
+        <ellipse cx="224" cy="212" rx="22" ry="9" fill="#FBF3E7"/>
+        <ellipse cx="224" cy="176" rx="14" ry="6" fill="#FBF3E7"/>
+      </g>
+      <!-- 東京鐵塔 -->
+      <g stroke="#D9694F" stroke-width="3.4" fill="none" stroke-linecap="round">
+        <path d="M980,356 L1014,206"/>
+        <path d="M1048,356 L1014,206"/>
+        <path d="M1014,206 L1014,168"/>
+        <path d="M996,286 h36"/>
+        <path d="M988,320 h52"/>
+        <path d="M1002,240 h24"/>
+      </g>
+      <!-- 摩天輪（港未來） -->
+      <g stroke="#4E7E93" stroke-width="2.8" fill="none">
+        <circle cx="112" cy="292" r="46" fill="#FBF3E7" fill-opacity="0.5"/>
+        <circle cx="112" cy="292" r="8" fill="#E2A83A"/>
+        <path d="M112,246 L112,338 M66,292 L158,292 M79,259 L145,325 M145,259 L79,325"/>
+        <path d="M112,338 L112,356"/>
+      </g>
+      <!-- 鳥居 -->
+      <g stroke="#C24A3C" stroke-width="6" fill="none" stroke-linecap="round">
+        <path d="M700,356 L706,268"/>
+        <path d="M792,356 L786,268"/>
+        <path d="M684,262 q62,-14 124,0"/>
+        <path d="M692,286 h108"/>
+        <path d="M746,262 L746,286"/>
+      </g>
+    </g>
+
+    <!-- 海 -->
+    <path d="M0,352 h1200 v168 h-1200 z" fill="url(#sea)"/>
+    <rect y="352" width="1200" height="168" fill="url(#seigaiha)"/>
+    <path d="M0,352 h1200" stroke="#3F6C80" stroke-width="2.5" opacity="0.5" filter="url(#ink)"/>
+
+    <!-- 櫻花 -->
+    <g fill="#F3A7B8" opacity="0.92">
+      <g transform="translate(320,96) rotate(18)">
+        <g id="pt"><path d="M0,0 q7,-11 14,0 q-7,9 -14,0 z"/></g>
+        <use href="#pt" transform="rotate(72)"/><use href="#pt" transform="rotate(144)"/>
+        <use href="#pt" transform="rotate(216)"/><use href="#pt" transform="rotate(288)"/>
+      </g>
+      <path d="M596,120 q10,-15 20,0 q-10,13 -20,0 z" transform="rotate(28 606 120)"/>
+      <path d="M760,182 q8,-12 16,0 q-8,10 -16,0 z" transform="rotate(-14 768 182)"/>
+      <path d="M436,142 q9,-13 18,0 q-9,11 -18,0 z" transform="rotate(46 445 142)"/>
+      <path d="M868,318 q8,-12 16,0 q-8,10 -16,0 z" transform="rotate(12 876 318)"/>
+      <path d="M158,182 q7,-11 14,0 q-7,9 -14,0 z" transform="rotate(-32 165 182)"/>
+      <path d="M660,68 q9,-13 18,0 q-9,11 -18,0 z" transform="rotate(64 669 68)"/>
+    </g>
+  </g>
+</svg>

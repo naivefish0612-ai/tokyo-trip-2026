@@ -113,7 +113,7 @@ def main():
         json.dump(blob, f)
 
     # ---- 靜態檔 ----
-    for name in ('index.html', 'style.css', 'app.js'):
+    for name in ('index.html', 'style.css', 'app.js', 'hero.svg'):
         shutil.copy2(os.path.join(WEB, name), os.path.join(DOCS, name))
 
     # GitHub Pages 不要跑 Jekyll
