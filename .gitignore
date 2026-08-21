@@ -3,3 +3,8 @@ build/
 app/build/
 local.properties
 .idea/
+
+# 簽章金鑰與密碼絕不進版控（本 repo 為公開）
+keystore.properties
+*.jks
+*.keystore

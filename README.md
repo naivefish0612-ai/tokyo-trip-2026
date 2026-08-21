@@ -39,12 +39,34 @@ export ANDROID_HOME=/path/to/android-sdk
 ./gradlew testDebugUnitTest   # Robolectric：資料一致性 + 全畫面渲染 + 搜尋互動
 ```
 
+需要 JDK 17 或 21（JDK 25 不被 Gradle 8.11.1 / AGP 8.7.3 接受）。
+要簽出可覆蓋升級的 APK，需在專案根目錄放置 `keystore.properties`：
+
+```properties
+storeFile=/path/to/tokyo2026-release.jks
+storePassword=...
+keyAlias=tokyo2026
+keyPassword=...
+```
+
 ## 已建置的 APK
 
-`apk/Tokyo2026-v1.1.apk`（release，debug 金鑰簽章，可直接側載）。
+`apk/Tokyo2026-v1.2.apk`（release，可直接側載）。
 手機開啟「允許安裝未知來源應用程式」後點開即可安裝。
 
-## v1.1 修正（v1.0 會閃退）
+## 簽章
+
+自 v1.2 起改用固定的簽章金鑰，讓不同機器建出來的 APK 能互相覆蓋升級。
+金鑰路徑與密碼放在 `keystore.properties`，該檔與 `*.jks` 皆列入 `.gitignore`，
+**不在此 repo 內**（repo 為公開）。缺少該檔時建置會自動退回 debug 簽章，仍可正常編譯。
+
+憑證 SHA-256：`f700c6e538a69336054bceb679c3e8d45460aafa3a98d9255b37d29d8e615ad4`
+
+v1.0 與 v1.1 是用各自環境自動產生的 debug 金鑰簽的，憑證彼此不同，
+因此**從 v1.0／v1.1 升級到 v1.2 必須先解除安裝**（打卡與收藏記錄會一併清除）。
+v1.2 之後的版本則可直接覆蓋升級。
+
+## v1.1／v1.2 修正（v1.0 會閃退）
 
 - **首頁捲到「交通總覽」必定閃退**：「每日移動時間」長條圖用 `weight(1f - moveMinutes / 250f)`
   計算剩餘空間，Day 1 含 205 分鐘航班共 265 分，算出 `-0.06`，而 Compose 的
