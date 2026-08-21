@@ -41,8 +41,21 @@ export ANDROID_HOME=/path/to/android-sdk
 
 ## 已建置的 APK
 
-`apk/Tokyo2026-v1.0.apk`（release，debug 金鑰簽章，可直接側載）。
+`apk/Tokyo2026-v1.1.apk`（release，debug 金鑰簽章，可直接側載）。
 手機開啟「允許安裝未知來源應用程式」後點開即可安裝。
+
+## v1.1 修正（v1.0 會閃退）
+
+- **首頁捲到「交通總覽」必定閃退**：「每日移動時間」長條圖用 `weight(1f - moveMinutes / 250f)`
+  計算剩餘空間，Day 1 含 205 分鐘航班共 265 分，算出 `-0.06`，而 Compose 的
+  `Modifier.weight()` 要求必須大於 0，直接丟 `IllegalArgumentException`。
+  改為以最長的一天等比縮放並鉗制在 `(0, 1]`，Day 6 的 247 分（原本只差 3 分就觸發）也一併脫離風險。
+- **照片快取無上限**：37 張照片解碼後常駐約 49MB 且永不淘汰，小 heap 裝置會 OOM。
+  改用 `LruCache`，上限為可用堆積的 1/8。
+- **API 24–25 找不到啟動圖示**：先前只有 `mipmap-anydpi-v26`，補上 `mipmap-anydpi` 的
+  非 adaptive-icon 版本（API 26 以上仍優先使用 adaptive-icon）。
+- 回歸測試 `homeScreenScrollsToBottomWithoutCrashing` 會實際捲到底部；
+  原本的 `homeScreenRenders` 只碰得到 LazyColumn 頂端，因此完全沒發現這個閃退。
 
 ## 行程排定邏輯（重要變動）
 

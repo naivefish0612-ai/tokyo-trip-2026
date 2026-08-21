@@ -1,10 +1,13 @@
 package com.tokyo2026.trip
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.runtime.mutableStateOf
 import androidx.test.core.app.ApplicationProvider
@@ -80,6 +83,20 @@ class AppRenderTest {
         rule.setContent { Tokyo2026Theme { HomeScreen(store(), onDay = {}, onSpot = {}, onChecklist = {}) } }
         rule.onNodeWithText(Trip.title).assertExists()
         rule.onNodeWithText("每日行程").assertExists()
+    }
+
+    /**
+     * homeScreenRenders 只碰得到 LazyColumn 頂端；「每日移動時間」長條圖在最底部，
+     * 先前 Day 1 的 265 分鐘會讓剩餘 Spacer 的 weight 變成 -0.06 而在實機閃退。
+     */
+    @Test
+    fun homeScreenScrollsToBottomWithoutCrashing() {
+        rule.setContent { Tokyo2026Theme { HomeScreen(store(), onDay = {}, onSpot = {}, onChecklist = {}) } }
+        // 每張日卡片內也有 LazyRow，onFirst() 取的是最外層的 LazyColumn。
+        rule.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(hasText("每日移動時間"))
+        rule.waitForIdle()
+        rule.onNodeWithText("每日移動時間").assertExists()
+        Trip.days.forEach { rule.onAllNodesWithText("${it.moveMinutes} 分").onFirst().assertExists() }
     }
 
     @Test

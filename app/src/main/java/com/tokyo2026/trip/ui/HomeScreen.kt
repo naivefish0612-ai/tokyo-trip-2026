@@ -129,15 +129,18 @@ fun HomeScreen(store: TripStore, onDay: (Int) -> Unit, onSpot: (String) -> Unit,
         item { SectionTitle("交通總覽") }
         item {
             InfoCard("每日移動時間", accent = cs.primary) {
+                // 以最長的一天為基準等比縮放；weight 必須恆大於 0，否則 Compose 會丟 IllegalArgumentException。
+                val maxMove = Trip.days.maxOf { it.moveMinutes }.coerceAtLeast(1)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Trip.days.forEach { d ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("D${d.n}", Modifier.width(34.dp), style = MaterialTheme.typography.labelLarge, color = cs.primary)
+                            val frac = (d.moveMinutes.toFloat() / maxMove).coerceIn(0.04f, 1f)
                             Box(
-                                Modifier.height(8.dp).weight(d.moveMinutes.coerceAtLeast(10) / 250f)
+                                Modifier.height(8.dp).weight(frac)
                                     .clip(RoundedCornerShape(4.dp)).background(cs.primary.copy(alpha = 0.75f))
                             )
-                            Spacer(Modifier.weight(1f - d.moveMinutes.coerceAtLeast(10) / 250f))
+                            if (frac < 1f) Spacer(Modifier.weight(1f - frac))
                             Spacer(Modifier.width(8.dp))
                             Text("${d.moveMinutes} 分", style = MaterialTheme.typography.labelMedium, color = cs.onSurfaceVariant)
                         }
