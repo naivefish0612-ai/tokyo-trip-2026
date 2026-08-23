@@ -155,28 +155,48 @@ internal val day4 = Day(
 internal val day5 = Day(
     n = 5, date = "9/29", weekday = "週二",
     theme = "有明沉浸式．麻布台與東京鐵塔夜",
-    summary = "配合皮克斯展 14:00 場重排；晚上補上 Day 1 沒去成的東京鐵塔，就在麻布台旁邊。",
+    summary = "早上開門就進 SMALL WORLDS，DREAM PARK 只外拍，傍晚在藍調時刻拍東京鐵塔。",
     hotelName = "Dormy Inn 川崎（第 2 晚）",
-    hotelNote = "回程：東京鐵塔→赤羽橋站→大江戶線→大門→JR→川崎，約 45 分，21:15 出發約 22:00 到。",
+    hotelNote = "回程：東京鐵塔→赤羽橋站→大江戶線→大門→JR→川崎，約 45 分，18:50 出發約 19:35 到，今晚可以早點休息。",
     alerts = listOf(
         "已預訂：皮克斯的世界展 9/29（二）14:00 入場，日時指定制，遲到可能無法入場。",
-        "東京鐵塔由 Day 1 移到今晚，並依你的需求改成「拍照就走」：不上展望台，麻布台徒步 12 分直接到最佳機位。",
+        "東京鐵塔由 Day 1 移到今天 18:05，改成「拍照就走」：不上展望台，麻布台徒步 12 分直接到最佳機位。",
         "麻布台 33F Sky Lobby 自 2024/4 起停止一般開放，別當免費展望台。",
         "豐洲千客萬來已移到 Day 8 上午（早市時段才是它的精華）。"
     ),
     tips = listOf(
-        "有明三館彼此徒步 10–15 分，上午先把 TOKYO DREAM PARK 走完，13:30 前移動到展場最保險。",
-        "SMALL WORLDS 末入場 18:00，排在皮克斯展之後剛剛好。",
-        "兩座塔都只拍照不上樓，今天回川崎的時間提前到 21:45，隔天橫濱才有體力。"
+        "有明三館彼此徒步 10–15 分，動線是 SMALL WORLDS→DREAM PARK→展場，全程不用搭車。",
+        "SMALL WORLDS 9:00 開門就進場，人最少、演出時刻表也拿得到最完整的一輪。",
+        "12:45–13:40 在有明 GARDEN 午餐，13:45 前到展場。",
+        "東京鐵塔改到 18:05，正好卡在日落後的藍調時刻，塔身已點燈、天空還有顏色，是最好拍的 20 分鐘。"
     ),
     stops = listOf(
-        Stop("10:00",
-            leg = Leg("電車", "川崎→JR→新橋，轉百合海鷗線→有明（徒步 3 分）", 50, "約 700 円"),
+        Stop("09:00",
+            leg = Leg("電車", "川崎→JR→新橋，轉百合海鷗線→有明（9:00 開門即入場）", 50, "約 700 円"),
+            spot = Spot(
+                id = "d5_smallworlds", nameZh = "SMALL WORLDS TOKYO", nameJa = "スモールワールズTOKYO",
+                kana = "スモールワールズトーキョー", art = Art.MINIATURE, cat = Cat.CULTURE,
+                area = "有明／江東區", lat = 35.6320, lng = 139.7960,
+                stay = "2.5 小時", hours = "9:00–19:00（末入場 18:00）",
+                price = "大人 3,200 円、國高中（12–17）2,100 円、兒童（4–11）1,700 円", closed = "無公休日",
+                notes = listOf(
+                    "世界最大級室內微縮樂園，1/80 比例八大區。",
+                    "重點是「會動」：火箭發射、飛機起降、24 分一次的晝夜循環，入口先拿演出時刻表。",
+                    "EVA 區第三新東京市會整個升起，全館必看。",
+                    "可付費做自己的 1/80 人偶「住民權」（約 9,900 円起，需預約）。"
+                ),
+                eats = listOf("館內咖啡廳聯名餐點"),
+                warns = listOf("可拍照但禁腳架與閃光燈。", "11:30 離開，接著到 DREAM PARK 外拍。"),
+                official = "https://www.smallworlds.jp/"
+            )
+        ),
+        Stop("11:45",
+            leg = Leg("步行", "SMALL WORLDS→TOKYO DREAM PARK 徒步 12 分", 12, "—"),
             spot = Spot(
                 id = "d5_dreampark", nameZh = "TOKYO DREAM PARK（含 EX STUDIO7）", nameJa = "TOKYO DREAM PARK／EX STUDIO7",
                 kana = "とうきょうドリームパーク", art = Art.DREAM, cat = Cat.THEME,
                 area = "有明／江東區", lat = 35.6353, lng = 139.7930,
-                stay = "3 小時", hours = "10:00–19:00（各展演依場次）",
+                stay = "1 小時（純外拍）", hours = "10:00–19:00（各展演依場次）",
                 price = "入館免費，展演另購票", closed = "不定休",
                 booking = "熱門展覽建議線上先買日時指定券",
                 notes = listOf(
@@ -186,7 +206,7 @@ internal val day5 = Day(
                     "屋頂 DREAM TERRACE 免費，人少好拍。"
                 ),
                 eats = listOf("館內哆啦A夢聯名餐點", "有明 GARDEN 美食街（徒步 8 分）"),
-                warns = listOf("展覽會換檔，出發前確認 9/29 在展什麼。", "13:15 一定要離開，才趕得上 14:00 的皮克斯展。"),
+                warns = listOf("只外拍不進展演，館內展覽需另購票。", "12:45 前結束，於有明 GARDEN 午餐後前往展場。"),
                 official = "https://tdp.tv-asahi.co.jp/"
             )
         ),
@@ -210,32 +230,13 @@ internal val day5 = Day(
                 official = "https://mundopixar.jp/"
             )
         ),
-        Stop("16:10",
-            leg = Leg("步行", "有明地區徒步 12 分（末入場 18:00）", 12, "—"),
-            spot = Spot(
-                id = "d5_smallworlds", nameZh = "SMALL WORLDS TOKYO", nameJa = "スモールワールズTOKYO",
-                kana = "スモールワールズトーキョー", art = Art.MINIATURE, cat = Cat.CULTURE,
-                area = "有明／江東區", lat = 35.6320, lng = 139.7960,
-                stay = "2 小時", hours = "9:00–19:00（末入場 18:00）",
-                price = "大人 3,200 円、國高中（12–17）2,100 円、兒童（4–11）1,700 円", closed = "無公休日",
-                notes = listOf(
-                    "世界最大級室內微縮樂園，1/80 比例八大區。",
-                    "重點是「會動」：火箭發射、飛機起降、24 分一次的晝夜循環，入口先拿演出時刻表。",
-                    "EVA 區第三新東京市會整個升起，全館必看。",
-                    "可付費做自己的 1/80 人偶「住民權」（約 9,900 円起，需預約）。"
-                ),
-                eats = listOf("館內咖啡廳聯名餐點"),
-                warns = listOf("可拍照但禁腳架與閃光燈。", "18:15 離開，接下來還有兩站。"),
-                official = "https://www.smallworlds.jp/"
-            )
-        ),
-        Stop("19:00",
+        Stop("16:20",
             leg = Leg("電車", "有明→百合海鷗線→新橋，轉日比谷線→神谷町（直結）", 40, "約 600 円"),
             spot = Spot(
                 id = "d5_azabudai", nameZh = "麻布台之丘 森JP Tower", nameJa = "麻布台ヒルズ 森JPタワー",
                 kana = "あざぶだいヒルズ", art = Art.HILLS, cat = Cat.NIGHT,
                 area = "麻布台／港區", lat = 35.6620, lng = 139.7420,
-                stay = "1 小時", hours = "戶外中央廣場 24 小時；商業區約 11:00–20:00、餐飲至 23:00",
+                stay = "1.5 小時", hours = "戶外中央廣場 24 小時；商業區約 11:00–20:00、餐飲至 23:00",
                 price = "戶外免費；teamLab Borderless 約 3,800 円起", closed = "不定休",
                 booking = "teamLab Borderless 需線上預約",
                 notes = listOf(
@@ -249,7 +250,7 @@ internal val day5 = Day(
                 official = "https://www.azabudai-hills.com/"
             )
         ),
-        Stop("20:15",
+        Stop("18:05",
             leg = Leg("步行", "麻布台之丘→東京鐵塔 徒步 12 分（沿櫻田通り）", 12, "—"),
             spot = Spot(
                 id = "d1_tokyotower", nameZh = "東京鐵塔", nameJa = "東京タワー",
