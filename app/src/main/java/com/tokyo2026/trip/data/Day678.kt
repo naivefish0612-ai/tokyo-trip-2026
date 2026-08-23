@@ -158,7 +158,7 @@ internal val day7 = Day(
     alerts = listOf(
         "藤子・F・不二雄博物館為完全日時指定制，只在官網售 QR 票、館內不售當日票；每日 7 梯（10:00–16:00）。",
         "澀谷 SKY 為 20 分一梯的日時指定券；網路 2,700 円（–14:59）／3,400 円（15:00–），現場各多 300 円；末入場 21:20。",
-        "豪德寺→新宿→大塚→池袋→新宿一路順向：千成排在池袋前一站，不必折返。",
+        "豪德寺→新宿→巣鴨→池袋→新宿一路順向：千成排在池袋前兩站，不必折返。",
         "都廳南展望室每月第 1、3 週二休室；10/1 週四正常開放。"
     ),
     tips = listOf(
@@ -206,29 +206,30 @@ internal val day7 = Day(
                 official = "https://gotokuji.jp/"
             )
         ),
-        Stop("15:45",
-            leg = Leg("電車", "宮之坂→世田谷線→山下，步行至豪德寺站→小田急→新宿，轉 JR 山手線→大塚（北口徒步 1 分）", 45, "約 460 円"),
+        Stop("15:48",
+            leg = Leg("電車", "宮之坂→世田谷線→山下，步行至豪德寺站→小田急→新宿，轉 JR 山手線→巣鴨（徒步 2 分）", 48, "約 480 円"),
             spot = Spot(
-                id = "d7_sennari", nameZh = "元祖 千成最中本舖 大塚店", nameJa = "千成もなか本舗 大塚店",
+                id = "d7_sennari", nameZh = "元祖 千成最中本舖 巣鴨店", nameJa = "千成もなか本舗 巣鴨店",
                 kana = "せんなりもなかほんぽ", art = Art.SHOP, cat = Cat.FOOD,
-                area = "大塚／豐島區", lat = 35.7302, lng = 139.7284,
-                stay = "20 分", hours = "10:00–19:00",
+                area = "巣鴨／豐島區", lat = 35.7338, lng = 139.7385,
+                stay = "25 分", hours = "10:00–18:00",
                 price = "現煎銅鑼燒與最中皆百円級，可單顆買",
                 closed = "年中無休",
                 notes = listOf(
                     "1937（昭和 12）年創業的老舖，不使用合成保存料。",
-                    "招牌是在你面前現煎的銅鑼燒皮，店家自稱「和風鬆餅」，熱的最好吃。",
+                    "門口就是煎台，銅鑼燒皮一片片現煎；賣完會直接補煎，幾乎都買得到熱的。",
+                    "店內有內用區、附免費熱茶，可以坐下來把剛煎好的吃掉。",
                     "另一名物是瓢箪造型最中，有小倉、梅、白餡等 5 種。",
-                    "JR 大塚站北口徒步 1 分，都電荒川線大塚站前也在門口。"
+                    "JR 巣鴨站往巣鴨地藏通商店街方向徒步 2 分，順路可瞄一眼「刺拔地藏」。"
                 ),
                 eats = listOf("現煎銅鑼燒（和風パンケーキ）", "瓢箪最中 5 種餡"),
-                warns = listOf("現煎品項熱的才好吃，建議站著吃完再走。", "19:00 打烊，但熱門品項可能提早售完。"),
+                warns = listOf("18:00 就打烊，比大塚店早一小時，別排太晚。", "現煎的熱食不耐放，當場吃完再走。"),
                 official = "https://www.monaka.co.jp/",
-                mapQuery = "千成もなか本舗 大塚店"
+                mapQuery = "千成もなか本舗 巣鴨店"
             )
         ),
-        Stop("16:10",
-            leg = Leg("電車", "大塚→JR 山手線 1 站→池袋（東口）", 4, "150 円"),
+        Stop("16:20",
+            leg = Leg("電車", "巣鴨→JR 山手線 2 站→池袋（東口）", 7, "160 円"),
             spot = Spot(
                 id = "d2_loft", nameZh = "池袋 LOFT", nameJa = "池袋ロフト",
                 kana = "いけぶくろロフト", art = Art.SHOP, cat = Cat.SHOP,
@@ -244,7 +245,7 @@ internal val day7 = Day(
                 official = "https://www.loft.co.jp/"
             )
         ),
-        Stop("17:05",
+        Stop("17:15",
             leg = Leg("電車", "池袋→JR 山手線→新宿（西口徒步 10 分）", 12, "180 円"),
             spot = Spot(
                 id = "d7_tocho", nameZh = "東京都廳舍 展望室", nameJa = "東京都庁舎 展望室",
@@ -263,13 +264,13 @@ internal val day7 = Day(
                 official = "https://www.yokoso.metro.tokyo.lg.jp/"
             )
         ),
-        Stop("18:40",
+        Stop("19:00",
             leg = Leg("步行", "都民廣場看完投影→新宿站→歌舞伎町徒步 15 分", 15, "—"),
             spot = Spot(
                 id = "d7_kabukicho", nameZh = "歌舞伎町", nameJa = "歌舞伎町",
                 kana = "かぶきちょう", art = Art.NIGHT, cat = Cat.NIGHT,
                 area = "新宿區", lat = 35.6950, lng = 139.7020,
-                stay = "1.5 小時", hours = "全時段（多數店 17:00 後熱鬧）",
+                stay = "1 小時", hours = "全時段（多數店 17:00 後熱鬧）",
                 price = "散步免費", closed = "無",
                 notes = listOf(
                     "必拍新宿東寶大樓的哥吉拉頭，從一番街正面仰拍。",
@@ -281,7 +282,7 @@ internal val day7 = Day(
                 official = "https://www.kabukicho.or.jp/"
             )
         ),
-        Stop("20:15",
+        Stop("20:10",
             leg = Leg("電車", "新宿→JR 山手線→澀谷（徒步 3 分）", 8, "160 円"),
             spot = Spot(
                 id = "d7_scramble", nameZh = "澀谷 Scramble 交叉路口", nameJa = "渋谷スクランブル交差点",
@@ -297,7 +298,7 @@ internal val day7 = Day(
                 warns = listOf("路口中央不可停下拍照。", "扒手多，背包背前面。")
             )
         ),
-        Stop("20:45",
+        Stop("20:40",
             leg = Leg("步行", "澀谷站八公口徒步 1 分", 1, "—"),
             spot = Spot(
                 id = "d7_hachiko", nameZh = "忠犬八公像", nameJa = "忠犬ハチ公像",
@@ -312,7 +313,7 @@ internal val day7 = Day(
                 warns = listOf("全澀谷最擠的集合點，注意隨身物品。")
             )
         ),
-        Stop("21:00",
+        Stop("20:55",
             leg = Leg("步行", "澀谷 Scramble Square 14F 售票口→45F", 5, "—"),
             spot = Spot(
                 id = "d7_shibuyasky", nameZh = "澀谷 SKY", nameJa = "SHIBUYA SKY（渋谷スカイ）",
