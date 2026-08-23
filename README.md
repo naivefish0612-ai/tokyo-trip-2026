@@ -1,7 +1,9 @@
-# 東京2026 — 8 天 7 夜互動行程 App
+# 東京2026 — 8 天 7 夜互動行程
 
-2026/9/25–10/2 東京・橫濱・川崎・湘南自由行的離線 Android App。
+2026/9/25–10/2 東京・橫濱・川崎・湘南自由行的加密行程網站。
 依實際航班（CI 106／CI 105）與已預訂的票券場次排定動線。
+
+**網址**：https://naivefish0612-ai.github.io/tokyo-trip-2026/ （需密碼）
 
 ## 行程
 
@@ -11,90 +13,69 @@
 | 2 | 9/26 六 | 淺草・晴空塔外拍・秋葉原・赤羽花火 | 東橫INN 三之輪 |
 | 3 | 9/27 日 | 吉祥寺・吉卜力 14:00・澀谷 | 玩具總動員飯店 |
 | 4 | 9/28 一 | 東京迪士尼樂園 | Dormy Inn 川崎 |
-| 5 | 9/29 二 | 有明三館・皮克斯展 14:00・麻布台與東京鐵塔夜 | Dormy Inn 川崎 |
+| 5 | 9/29 二 | SMALL WORLDS・皮克斯展 14:00・東京鐵塔藍調時刻 | Dormy Inn 川崎 |
 | 6 | 9/30 三 | 江之島・八景島・港未來 | VIA INN 大井町 |
 | 7 | 10/1 四 | 藤子F博物館・豪德寺・池袋・新宿・澀谷 SKY | VIA INN 大井町 |
 | 8 | 10/2 五 | 豐洲千客萬來 → 成田（CI 105 17:55） | — |
 
 ## 功能
 
-- **逐日行程**：40 個景點，每站含建議時間、停留時長與站間電車路線／時間／車資。
-- **在地達人筆記**：整理自日文官方網站與在地情報的玩法、必吃必買、避雷提醒。
-- **實景照片**：37 個景點採用 Wikimedia Commons 的 CC／公有領域照片，打包離線可看，附作者與授權連結；其餘以自製向量插畫呈現。
+- **逐日行程**：41 個景點，每站含建議時間、停留時長與站間電車路線／時間／車資。
+- **在地達人筆記**：整理自日文官方網站與在地情報的玩法、必吃必買、避雷提醒，依類別以顏色與圖示區分。
+- **實景照片**：37 個景點採用 Wikimedia Commons 的 CC／公有領域照片，附作者與授權連結；可點開全螢幕。
 - **官網直達**：每個景點一鍵開啟日文官方網站確認最新時間與票價。
-- **地圖導航**：內建經緯度，一鍵開 Google Maps 導航。
+- **地圖導航**：以日文地標名開啟 Google Maps，顯示店名與營業資訊，而非無名座標。
 - **搜尋與篩選**：中／日文名與地區搜尋，依展望、御宅、樂園等分類與「收藏」篩選。
-- **打卡與行前清單**：本機儲存，離線可用。
+- **打卡與行前清單**：存於瀏覽器 localStorage。
 
-## 技術
+## 安全性
 
-Kotlin 2.0.21 / Jetpack Compose (BOM 2024.10.01) / Material 3 / Navigation Compose
-minSdk 24、targetSdk 35、**無網路權限**、無第三方 SDK、無帳號。
+行程內容記載了不在家的日期與每晚住宿，因此不以明文放上網路：
+
+- `docs/data.enc.json` 為 **AES-256-GCM** 密文，金鑰由 **PBKDF2-SHA256（600,000 次迭代）** 從密碼推導，僅在瀏覽器記憶體中解密。
+- 照片檔名為加鹽雜湊，未解密者無法從檔名反推行程結構；salt 只存在於密文內。
+- 純靜態、無後端，因此不存在 SQL 注入、RCE、權限繞過等整類威脅。
+- CSP 僅允許同源資源，無任何第三方相依（不引用 CDN、字型、分析工具）。
+- DOM 全以 `createElement`／`textContent` 建構，不使用 `innerHTML`。
+- `frame-ancestors` 經 `<meta>` 依規格無效，點擊劫持改由 `app.js` 開頭的 frame guard 處理。
+- 全站 `noindex` 且 `robots.txt` 禁止索引。
+
+**密碼強度即為全部防線**：密文可公開下載並離線暴力破解，勿改用好記的短密碼。
 
 ## 建置
 
+行程資料的唯一來源是 `app/src/main/java/com/tokyo2026/trip/data/` 下的 Kotlin 物件。
+匯出器直接讀取這些物件而非解析原始碼，因此網站內容不會與資料定義脫節。
+
 ```bash
-export ANDROID_HOME=/path/to/android-sdk
-./gradlew assembleRelease     # app/build/outputs/apk/release/app-release.apk
-./gradlew testDebugUnitTest   # Robolectric：資料一致性 + 全畫面渲染 + 搜尋互動
+source /home/core/android-build/env.sh        # JDK 21 + Android SDK 35
+./gradlew testDebugUnitTest --tests '*ExportWebData*'   # → web-build/data.json
+python3 web/build.py --passphrase '<密碼>'              # → docs/
+git push                                                # GitHub Pages 自動部署
 ```
+
+密碼務必沿用既有的，否則使用者已儲存的密碼會失效。
+`web/build.py` 會在 CSS 缺少 `app.js` 用到的 class 時直接讓建置失敗。
 
 需要 JDK 17 或 21（JDK 25 不被 Gradle 8.11.1 / AGP 8.7.3 接受）。
-要簽出可覆蓋升級的 APK，需在專案根目錄放置 `keystore.properties`：
-
-```properties
-storeFile=/path/to/tokyo2026-release.jks
-storePassword=...
-keyAlias=tokyo2026
-keyPassword=...
-```
-
-## 已建置的 APK
-
-`apk/Tokyo2026-v1.2.apk`（release，可直接側載）。
-手機開啟「允許安裝未知來源應用程式」後點開即可安裝。
-
-## 簽章
-
-自 v1.2 起改用固定的簽章金鑰，讓不同機器建出來的 APK 能互相覆蓋升級。
-金鑰路徑與密碼放在 `keystore.properties`，該檔與 `*.jks` 皆列入 `.gitignore`，
-**不在此 repo 內**（repo 為公開）。缺少該檔時建置會自動退回 debug 簽章，仍可正常編譯。
-
-憑證 SHA-256：`f700c6e538a69336054bceb679c3e8d45460aafa3a98d9255b37d29d8e615ad4`
-
-v1.0 與 v1.1 是用各自環境自動產生的 debug 金鑰簽的，憑證彼此不同，
-因此**從 v1.0／v1.1 升級到 v1.2 必須先解除安裝**（打卡與收藏記錄會一併清除）。
-v1.2 之後的版本則可直接覆蓋升級。
-
-## v1.1／v1.2 修正（v1.0 會閃退）
-
-- **首頁捲到「交通總覽」必定閃退**：「每日移動時間」長條圖用 `weight(1f - moveMinutes / 250f)`
-  計算剩餘空間，Day 1 含 205 分鐘航班共 265 分，算出 `-0.06`，而 Compose 的
-  `Modifier.weight()` 要求必須大於 0，直接丟 `IllegalArgumentException`。
-  改為以最長的一天等比縮放並鉗制在 `(0, 1]`，Day 6 的 247 分（原本只差 3 分就觸發）也一併脫離風險。
-- **照片快取無上限**：37 張照片解碼後常駐約 49MB 且永不淘汰，小 heap 裝置會 OOM。
-  改用 `LruCache`，上限為可用堆積的 1/8。
-- **API 24–25 找不到啟動圖示**：先前只有 `mipmap-anydpi-v26`，補上 `mipmap-anydpi` 的
-  非 adaptive-icon 版本（API 26 以上仍優先使用 adaptive-icon）。
-- 回歸測試 `homeScreenScrollsToBottomWithoutCrashing` 會實際捲到底部；
-  原本的 `homeScreenRenders` 只碰得到 LazyColumn 頂端，因此完全沒發現這個閃退。
-
-## 行程排定邏輯（重要變動）
-
-- Day 1 因 20:50 落地改為純抵達日；Skyliner 空港第2ビル 末班 23:23。
-- 晴空塔（Day 2 中午）與東京鐵塔（Day 5 晚上）皆為**外拍不上塔**，不需購票。
-- 吉卜力美術館 9/27 14:00、皮克斯的世界展 9/29 14:00 為已訂場次，該兩日動線依此重排。
-- 豐洲千客萬來排在 Day 8 上午（早市時段），中午由市場前經新橋搭 Access 特急直達成田。
-- Day 7 前往登戶走「大井町→川崎→JR 南武線」，比繞新宿快約 20 分。
 
 ## 資料時效
 
-景點營業時間、票價與公休日查證於 2026 年 8 月。已知重大變動：
+景點營業時間、票價與公休日以日文官方網站查證於 2026 年 8 月。已知重大變動：
 
 - 橫濱地標大廈 69F Sky Garden 自 2025/12/31 起停業整修，預計 2028 年後重開。
 - 麻布台之丘 森JP Tower 33F Sky Lobby 自 2024/4/18 起停止一般開放。
-- 東京晴空塔自 2026/4 起改採浮動票價。
+- 東京晴空塔自 2026/4 起改採日別變動票價（天望甲板大人 1,800–3,600 円，現場購票 +500 円）。
+- 澀谷 SKY 改為時段分級：網路 2,700 円（–14:59）／3,400 円（15:00–），現場各多 300 円。
+- 東京迪士尼樂園 2026/9 區間為 8,900–10,900 円，10/10 起最高調至 12,400 円。
+- 三鷹之森吉卜力美術館 2026/11/4–11/18 維修休館（不影響 9/27 場次）。
+
+## Android App（已停止維護）
+
+`app/` 下的 Android 模組是本專案的前身，自 2026/8/23 起不再建置或發布。
+保留該目錄是因為行程資料與匯出器住在裡面；其餘 Compose UI 程式碼已無作用。
 
 ## 授權
 
-程式碼為個人行程用途。App 內照片版權屬各原作者，授權條款列於各景點頁與 `app/src/main/java/com/tokyo2026/trip/data/Photos.kt`。
+程式碼為個人行程用途。照片版權屬各原作者，授權條款列於各景點頁與
+`app/src/main/java/com/tokyo2026/trip/data/Photos.kt`。
