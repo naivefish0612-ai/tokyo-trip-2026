@@ -29,11 +29,17 @@ data class Spot(
     val notes: List<String> = emptyList(),
     val eats: List<String> = emptyList(),
     val warns: List<String> = emptyList(),
-    val official: String? = null
+    val official: String? = null,
+    /** 地圖查詢字串。留空則用日文名；名稱含／＠或活動名時才需覆寫成實際地標。 */
+    val mapQuery: String? = null
 ) {
     val photo: String? get() = photoAsset(id)
-    val mapUrl: String get() = "https://www.google.com/maps/search/?api=1&query=$lat,$lng"
-    val navUrl: String get() = "https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=transit"
+
+    // 用地標名而非座標查詢，Google Maps 才會顯示店名、評價與營業時間；
+    // 只給經緯度的話畫面上只會是一個無名的圖釘。
+    private val q: String get() = java.net.URLEncoder.encode(mapQuery ?: nameJa, "UTF-8")
+    val mapUrl: String get() = "https://www.google.com/maps/search/?api=1&query=$q"
+    val navUrl: String get() = "https://www.google.com/maps/dir/?api=1&destination=$q&travelmode=transit"
 }
 
 data class Leg(val mode: String, val route: String, val minutes: Int, val fare: String)

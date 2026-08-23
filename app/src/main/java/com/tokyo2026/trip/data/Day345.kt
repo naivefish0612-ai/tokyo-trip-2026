@@ -207,7 +207,8 @@ internal val day5 = Day(
                 ),
                 eats = listOf("館內哆啦A夢聯名餐點", "有明 GARDEN 美食街（徒步 8 分）"),
                 warns = listOf("只外拍不進展演，館內展覽需另購票。", "12:45 前結束，於有明 GARDEN 午餐後前往展場。"),
-                official = "https://tdp.tv-asahi.co.jp/"
+                official = "https://tdp.tv-asahi.co.jp/",
+                mapQuery = "TOKYO DREAM PARK"
             )
         ),
         Stop("13:40",
@@ -227,7 +228,8 @@ internal val day5 = Day(
                 ),
                 eats = listOf("展場限定咖啡廳角色甜點"),
                 warns = listOf("日時指定制，遲到可能無法入場。", "部分展區禁閃光燈與自拍棒。"),
-                official = "https://mundopixar.jp/"
+                official = "https://mundopixar.jp/",
+                mapQuery = "CREVIA BASE Tokyo"
             )
         ),
         Stop("16:20",

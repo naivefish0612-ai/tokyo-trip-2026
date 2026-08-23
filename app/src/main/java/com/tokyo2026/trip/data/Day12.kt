@@ -252,7 +252,8 @@ internal val day2 = Day(
                     "河川敷幾乎沒廁所，垃圾要自行帶走。",
                     "草地碎石地，請穿球鞋。"
                 ),
-                official = "https://kitaku-hanabi.tokyo/"
+                official = "https://kitaku-hanabi.tokyo/",
+                mapQuery = "岩淵水門"
             )
         ),
         Stop("21:30",

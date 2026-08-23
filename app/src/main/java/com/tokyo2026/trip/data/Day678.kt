@@ -308,7 +308,8 @@ internal val day7 = Day(
                 ),
                 eats = listOf("46F Paradise Lounge", "12–13F 餐廳樓層"),
                 warns = listOf("強風雷雨關屋頂且不退票。", "屋頂風大，建議褲裝與好走的鞋。"),
-                official = "https://www.shibuya-scramble-square.com/sky/"
+                official = "https://www.shibuya-scramble-square.com/sky/",
+                mapQuery = "渋谷スカイ"
             )
         )
     )
