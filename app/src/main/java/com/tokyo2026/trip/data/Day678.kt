@@ -159,7 +159,7 @@ internal val day7 = Day(
         "藤子・F・不二雄博物館為完全日時指定制，只在官網售 QR 票、館內不售當日票；每日 7 梯（10:00–16:00）。",
         "澀谷 SKY 為 20 分一梯的日時指定券；網路 2,700 円（–14:59）／3,400 円（15:00–），現場各多 300 円；末入場 21:20。",
         "澀谷 SKY 訂 17:00 梯次：10/1 日落 17:27，提早半小時進場可一次看到白天、夕陽與夜景。",
-        "池袋 LOFT 已移除——它是往北的繞路，而 SKY 是定時梯次遲到票就作廢。磁鐵在 SKY 46F 紀念品店或 Day 2 淺草仲見世買。",
+        "池袋 LOFT 12F 的「旅するマグネット」是這天唯一的採購目標，這檔到 10/31；官方不做網購，澀谷店那次 POP UP 2025 年就結束了。",
         "都廳南展望室每月第 1、3 週二休室；10/1 週四正常開放。"
     ),
     tips = listOf(
@@ -188,7 +188,7 @@ internal val day7 = Day(
                 official = "https://fujiko-museum.com/"
             )
         ),
-        Stop("13:30",
+        Stop("13:10",
             leg = Leg("電車", "登戶→小田急小田原線→豪德寺，轉東急世田谷線→宮之坂（徒步 5 分）", 30, "約 280 円"),
             spot = Spot(
                 id = "d7_gotokuji", nameZh = "世田谷 豪德寺", nameJa = "大谿山 豪徳寺",
@@ -207,13 +207,13 @@ internal val day7 = Day(
                 official = "https://gotokuji.jp/"
             )
         ),
-        Stop("15:48",
+        Stop("15:28",
             leg = Leg("電車", "宮之坂→世田谷線→山下，步行至豪德寺站→小田急→新宿，轉 JR 山手線→巣鴨（徒步 2 分）", 48, "約 480 円"),
             spot = Spot(
                 id = "d7_sennari", nameZh = "元祖 千成最中本舖 巣鴨店", nameJa = "千成もなか本舗 巣鴨店",
                 kana = "せんなりもなかほんぽ", art = Art.SHOP, cat = Cat.FOOD,
                 area = "巣鴨／豐島區", lat = 35.7338, lng = 139.7385,
-                stay = "25 分", hours = "10:00–18:00",
+                stay = "20 分", hours = "10:00–18:00",
                 price = "現煎銅鑼燒與最中皆百円級，可單顆買",
                 closed = "年中無休",
                 notes = listOf(
@@ -229,8 +229,28 @@ internal val day7 = Day(
                 mapQuery = "千成もなか本舗 巣鴨店"
             )
         ),
+        Stop("15:55",
+            leg = Leg("電車", "巣鴨→JR 山手線 2 站→池袋（東口即到 LINKS IKEBUKURO）", 7, "160 円"),
+            spot = Spot(
+                id = "d7_loft", nameZh = "池袋 LOFT（旅するマグネット）", nameJa = "池袋ロフト",
+                kana = "いけぶくろロフト", art = Art.SHOP, cat = Cat.SHOP,
+                area = "池袋／豐島區", lat = 35.7297, lng = 139.7109,
+                stay = "25 分", hours = "週一至週六 10:00–21:00；週日假日 10:00–20:00",
+                price = "旅するマグネット 每個 700 円（含稅）", closed = "不定休",
+                notes = listOf(
+                    "目標明確：12F 文具賣場的「旅するマグネット」，美濃燒磁磚做的在地限定磁鐵。",
+                    "全 47 都道府県約 247 款中展出 87 款，這檔到 2026/10/31 為止。",
+                    "官方原則不做網購，只在現地買得到；澀谷店 2025 年那次是期間限定，已結束。",
+                    "位在 LINKS IKEBUKURO（友都八喜池袋大樓）9–12F，JR 池袋站東口出來即到。"
+                ),
+                eats = listOf("同棟 LINKS IKEBUKURO 餐飲樓層"),
+                warns = listOf("只鎖定 12F 磁鐵，25 分就走，後面澀谷 SKY 是定時梯次。", "10/1 為週四，營業到 21:00。"),
+                official = "https://www.loft.co.jp/shop/detail.php?shop_id=143",
+                mapQuery = "池袋ロフト"
+            )
+        ),
         Stop("17:00",
-            leg = Leg("電車", "巣鴨→JR 山手線→澀谷（Scramble Square 14F 售票口→45F）", 24, "220 円"),
+            leg = Leg("電車", "池袋→JR 山手線→澀谷（Scramble Square 14F 售票口→45F）", 16, "200 円"),
             spot = Spot(
                 id = "d7_shibuyasky", nameZh = "澀谷 SKY", nameJa = "SHIBUYA SKY（渋谷スカイ）",
                 kana = "しぶやスカイ", art = Art.SKY, cat = Cat.VIEW,
@@ -300,7 +320,7 @@ internal val day7 = Day(
                 official = "https://www.yokoso.metro.tokyo.lg.jp/"
             )
         ),
-        Stop("21:25",
+        Stop("21:30",
             leg = Leg("步行", "都民廣場看完投影→新宿站→歌舞伎町徒步 15 分", 15, "—"),
             spot = Spot(
                 id = "d7_kabukicho", nameZh = "歌舞伎町", nameJa = "歌舞伎町",
