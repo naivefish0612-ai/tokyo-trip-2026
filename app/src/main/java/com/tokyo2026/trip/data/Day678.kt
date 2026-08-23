@@ -152,13 +152,14 @@ internal val day6 = Day(
 internal val day7 = Day(
     n = 7, date = "10/1", weekday = "週四",
     theme = "哆啦A夢．招財貓．澀谷夜",
-    summary = "改走川崎→登戶最短路線，補上池袋 LOFT，再一路往東收在澀谷 SKY。",
+    summary = "改走川崎→登戶最短路線，傍晚卡日落上澀谷 SKY，晚上收在新宿。",
     hotelName = "VIA INN 東京大井町（第 2 晚）",
-    hotelNote = "澀谷→大井町：JR 山手線至品川，轉京濱東北線 1 站，約 20 分。",
+    hotelNote = "回程：歌舞伎町→新宿→JR 山手線→品川→京濱東北線→大井町，約 35 分，22:25 出發約 23:00 到。",
     alerts = listOf(
         "藤子・F・不二雄博物館為完全日時指定制，只在官網售 QR 票、館內不售當日票；每日 7 梯（10:00–16:00）。",
         "澀谷 SKY 為 20 分一梯的日時指定券；網路 2,700 円（–14:59）／3,400 円（15:00–），現場各多 300 円；末入場 21:20。",
-        "豪德寺→新宿→巣鴨→池袋→新宿一路順向：千成排在池袋前兩站，不必折返。",
+        "澀谷 SKY 訂 17:00 梯次：10/1 日落 17:27，提早半小時進場可一次看到白天、夕陽與夜景。",
+        "池袋 LOFT 已移除——它是往北的繞路，而 SKY 是定時梯次遲到票就作廢。磁鐵在 SKY 46F 紀念品店或 Day 2 淺草仲見世買。",
         "都廳南展望室每月第 1、3 週二休室；10/1 週四正常開放。"
     ),
     tips = listOf(
@@ -228,93 +229,8 @@ internal val day7 = Day(
                 mapQuery = "千成もなか本舗 巣鴨店"
             )
         ),
-        Stop("16:20",
-            leg = Leg("電車", "巣鴨→JR 山手線 2 站→池袋（東口）", 7, "160 円"),
-            spot = Spot(
-                id = "d2_loft", nameZh = "池袋 LOFT", nameJa = "池袋ロフト",
-                kana = "いけぶくろロフト", art = Art.SHOP, cat = Cat.SHOP,
-                area = "池袋／豐島區", lat = 35.7288, lng = 139.7132,
-                stay = "45 分", hours = "週一至週六 10:00–21:00；週日假日 10:00–20:00",
-                price = "免費入場", closed = "不定休",
-                notes = listOf(
-                    "現址在南池袋 LINKS 池袋 9–12F，出東口，不是舊西武別館。",
-                    "強項是文具與生活雜貨，伴手禮 CP 值最高。",
-                    "12F 常有動畫聯名快閃店。"
-                ),
-                warns = listOf("16:30 一定要離開，才接得上都廳的日落與投影。"),
-                official = "https://www.loft.co.jp/"
-            )
-        ),
-        Stop("17:15",
-            leg = Leg("電車", "池袋→JR 山手線→新宿（西口徒步 10 分）", 12, "180 円"),
-            spot = Spot(
-                id = "d7_tocho", nameZh = "東京都廳舍 展望室", nameJa = "東京都庁舎 展望室",
-                kana = "とうきょうとちょう てんぼうしつ", art = Art.GOV, cat = Cat.VIEW,
-                area = "西新宿／新宿區", lat = 35.6896, lng = 139.6921,
-                stay = "1.5 小時", hours = "南 9:30–22:00；北 9:30–17:30（末入室閉室前 30 分）",
-                price = "免費", closed = "南：每月第 1、3 週二；北：第 2、4 週一",
-                notes = listOf(
-                    "202m 高、完全免費，晴天可看到富士山，10 月機率變高。",
-                    "外牆投影「TOKYO Night & Light」是金氏認定世界最大常設建築投影，免費免預約。",
-                    "看投影站都民廣場即可，不必進大樓，日落後至 21:30 多場。",
-                    "南展望室有咖啡吧可坐著看夜景。"
-                ),
-                eats = listOf("展望室咖啡吧", "西口思い出橫丁串燒（徒步 10 分）"),
-                warns = listOf("需過安檢，旺季排 20–30 分。", "大型行李無法帶入。"),
-                official = "https://www.yokoso.metro.tokyo.lg.jp/"
-            )
-        ),
-        Stop("19:00",
-            leg = Leg("步行", "都民廣場看完投影→新宿站→歌舞伎町徒步 15 分", 15, "—"),
-            spot = Spot(
-                id = "d7_kabukicho", nameZh = "歌舞伎町", nameJa = "歌舞伎町",
-                kana = "かぶきちょう", art = Art.NIGHT, cat = Cat.NIGHT,
-                area = "新宿區", lat = 35.6950, lng = 139.7020,
-                stay = "1 小時", hours = "全時段（多數店 17:00 後熱鬧）",
-                price = "散步免費", closed = "無",
-                notes = listOf(
-                    "必拍新宿東寶大樓的哥吉拉頭，從一番街正面仰拍。",
-                    "東急歌舞伎町 TOWER B1「歌舞伎橫丁」24 小時、日本祭典風。",
-                    "思い出橫丁與ゴールデン街在西側，後者多有 500–1,500 円座位費。"
-                ),
-                eats = listOf("歌舞伎橫丁鄉土料理", "思い出橫丁燒鳥"),
-                warns = listOf("絕對不要跟路上拉客的人走，那在東京都條例是違法行為。", "深夜避開巷弄走大路。"),
-                official = "https://www.kabukicho.or.jp/"
-            )
-        ),
-        Stop("20:10",
-            leg = Leg("電車", "新宿→JR 山手線→澀谷（徒步 3 分）", 8, "160 円"),
-            spot = Spot(
-                id = "d7_scramble", nameZh = "澀谷 Scramble 交叉路口", nameJa = "渋谷スクランブル交差点",
-                kana = "しぶやスクランブルこうさてん", art = Art.CROSSING, cat = Cat.NIGHT,
-                area = "澀谷區", lat = 35.6595, lng = 139.7005,
-                stay = "30 分", hours = "24 小時", price = "免費", closed = "無",
-                notes = listOf(
-                    "一次綠燈最多約 3,000 人通過。",
-                    "免費俯拍點：澀谷站 2F 連通道玻璃；付費最佳角度是 MAGNET 頂樓（600 円）。",
-                    "慢速快門 1/4 秒可拍出人流殘影。",
-                    "雨天反而最好拍：地面反光＋雨傘。"
-                ),
-                warns = listOf("路口中央不可停下拍照。", "扒手多，背包背前面。")
-            )
-        ),
-        Stop("20:40",
-            leg = Leg("步行", "澀谷站八公口徒步 1 分", 1, "—"),
-            spot = Spot(
-                id = "d7_hachiko", nameZh = "忠犬八公像", nameJa = "忠犬ハチ公像",
-                kana = "ちゅうけんハチこう", art = Art.DOG, cat = Cat.CULTURE,
-                area = "澀谷區", lat = 35.6590, lng = 139.7006,
-                stay = "15 分", hours = "24 小時", price = "免費", closed = "無",
-                notes = listOf(
-                    "現在的銅像是 1948 年重鑄的第二代，初代在二戰時被熔掉。",
-                    "舊青蛙電車已移到秋田縣大館市，現地沒有了，別找錯。",
-                    "尖峰拍照要等 10–15 分，清晨 6 點前幾乎沒人。"
-                ),
-                warns = listOf("全澀谷最擠的集合點，注意隨身物品。")
-            )
-        ),
-        Stop("20:55",
-            leg = Leg("步行", "澀谷 Scramble Square 14F 售票口→45F", 5, "—"),
+        Stop("17:00",
+            leg = Leg("電車", "巣鴨→JR 山手線→澀谷（Scramble Square 14F 售票口→45F）", 24, "220 円"),
             spot = Spot(
                 id = "d7_shibuyasky", nameZh = "澀谷 SKY", nameJa = "SHIBUYA SKY（渋谷スカイ）",
                 kana = "しぶやスカイ", art = Art.SKY, cat = Cat.VIEW,
@@ -332,6 +248,74 @@ internal val day7 = Day(
                 warns = listOf("強風雷雨關屋頂且不退票。", "屋頂風大，建議褲裝與好走的鞋。"),
                 official = "https://www.shibuya-scramble-square.com/sky/",
                 mapQuery = "渋谷スカイ"
+            )
+        ),
+        Stop("18:35",
+            leg = Leg("步行", "Scramble Square 出來就是路口，徒步 5 分", 5, "—"),
+            spot = Spot(
+                id = "d7_scramble", nameZh = "澀谷 Scramble 交叉路口", nameJa = "渋谷スクランブル交差点",
+                kana = "しぶやスクランブルこうさてん", art = Art.CROSSING, cat = Cat.NIGHT,
+                area = "澀谷區", lat = 35.6595, lng = 139.7005,
+                stay = "30 分", hours = "24 小時", price = "免費", closed = "無",
+                notes = listOf(
+                    "一次綠燈最多約 3,000 人通過。",
+                    "免費俯拍點：澀谷站 2F 連通道玻璃；付費最佳角度是 MAGNET 頂樓（600 円）。",
+                    "慢速快門 1/4 秒可拍出人流殘影。",
+                    "雨天反而最好拍：地面反光＋雨傘。"
+                ),
+                warns = listOf("路口中央不可停下拍照。", "扒手多，背包背前面。")
+            )
+        ),
+        Stop("19:10",
+            leg = Leg("步行", "澀谷站八公口徒步 1 分", 1, "—"),
+            spot = Spot(
+                id = "d7_hachiko", nameZh = "忠犬八公像", nameJa = "忠犬ハチ公像",
+                kana = "ちゅうけんハチこう", art = Art.DOG, cat = Cat.CULTURE,
+                area = "澀谷區", lat = 35.6590, lng = 139.7006,
+                stay = "15 分", hours = "24 小時", price = "免費", closed = "無",
+                notes = listOf(
+                    "現在的銅像是 1948 年重鑄的第二代，初代在二戰時被熔掉。",
+                    "舊青蛙電車已移到秋田縣大館市，現地沒有了，別找錯。",
+                    "尖峰拍照要等 10–15 分，清晨 6 點前幾乎沒人。"
+                ),
+                warns = listOf("全澀谷最擠的集合點，注意隨身物品。")
+            )
+        ),
+        Stop("19:45",
+            leg = Leg("電車", "澀谷→JR 山手線→新宿（西口徒步 10 分）", 18, "170 円"),
+            spot = Spot(
+                id = "d7_tocho", nameZh = "東京都廳舍 展望室", nameJa = "東京都庁舎 展望室",
+                kana = "とうきょうとちょう てんぼうしつ", art = Art.GOV, cat = Cat.VIEW,
+                area = "西新宿／新宿區", lat = 35.6896, lng = 139.6921,
+                stay = "1.5 小時", hours = "南 9:30–22:00；北 9:30–17:30（末入室閉室前 30 分）",
+                price = "免費", closed = "南：每月第 1、3 週二；北：第 2、4 週一",
+                notes = listOf(
+                    "202m 高、完全免費，晴天可看到富士山，10 月機率變高。",
+                    "外牆投影「TOKYO Night & Light」是金氏認定世界最大常設建築投影，免費免預約。",
+                    "看投影站都民廣場即可，不必進大樓，日落後至 21:30 多場。",
+                    "南展望室有咖啡吧可坐著看夜景。"
+                ),
+                eats = listOf("展望室咖啡吧", "西口思い出橫丁串燒（徒步 10 分）"),
+                warns = listOf("需過安檢，旺季排 20–30 分。", "大型行李無法帶入。"),
+                official = "https://www.yokoso.metro.tokyo.lg.jp/"
+            )
+        ),
+        Stop("21:25",
+            leg = Leg("步行", "都民廣場看完投影→新宿站→歌舞伎町徒步 15 分", 15, "—"),
+            spot = Spot(
+                id = "d7_kabukicho", nameZh = "歌舞伎町", nameJa = "歌舞伎町",
+                kana = "かぶきちょう", art = Art.NIGHT, cat = Cat.NIGHT,
+                area = "新宿區", lat = 35.6950, lng = 139.7020,
+                stay = "1 小時", hours = "全時段（多數店 17:00 後熱鬧）",
+                price = "散步免費", closed = "無",
+                notes = listOf(
+                    "必拍新宿東寶大樓的哥吉拉頭，從一番街正面仰拍。",
+                    "東急歌舞伎町 TOWER B1「歌舞伎橫丁」24 小時、日本祭典風。",
+                    "思い出橫丁與ゴールデン街在西側，後者多有 500–1,500 円座位費。"
+                ),
+                eats = listOf("歌舞伎橫丁鄉土料理", "思い出橫丁燒鳥"),
+                warns = listOf("絕對不要跟路上拉客的人走，那在東京都條例是違法行為。", "深夜避開巷弄走大路。"),
+                official = "https://www.kabukicho.or.jp/"
             )
         )
     )
