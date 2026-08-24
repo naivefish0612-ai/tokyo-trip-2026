@@ -30,8 +30,44 @@
 </head>
 <body>
 
+<!-- 入口畫面：點擊「起動」之後才進入解鎖，行程在此之前完全不出現。
+     視覺全以 CSS 與 inline SVG 繪製，未引入任何外部字型或圖檔（CSP 只允許同源）。 -->
+<div id="gate">
+  <div class="gate-bg" aria-hidden="true">
+    <div class="gate-sun"></div>
+    <div class="gate-grid"></div>
+    <div class="gate-scan"></div>
+    <div class="gate-vignette"></div>
+  </div>
+
+  <div class="gate-inner">
+    <div aria-hidden="true" class="gate-torii">
+      <svg viewBox="0 0 200 160">
+        <g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="square">
+          <path d="M14 34 H186"/>
+          <path d="M26 50 H174"/>
+          <path d="M52 50 V150"/>
+          <path d="M148 50 V150"/>
+          <path d="M52 74 H148"/>
+        </g>
+      </svg>
+    </div>
+    <p class="gate-kicker">T O K Y O ・ Y O K O H A M A ・ 2 0 2 6</p>
+    <h1 class="gate-title" data-text="東京">東京</h1>
+    <p class="gate-sub">二〇二六年 九月二十五日 — 十月二日</p>
+    <p class="gate-rule" aria-hidden="true"></p>
+    <button id="gate-enter" class="gate-enter" type="button">
+      <span class="gate-enter-ja">起 動</span>
+      <span class="gate-enter-en">ENTER</span>
+    </button>
+    <p class="gate-foot">ENCRYPTED ・ AES-256-GCM ・ 要 認 証</p>
+  </div>
+
+  <p class="gate-vert" aria-hidden="true">夜の街へ、ようこそ</p>
+</div>
+
 <!-- 解鎖畫面：資料在通過這一關之前都還是密文 -->
-<div id="lock">
+<div id="lock" hidden>
   <div class="lock-card">
     <div class="lock-mark" aria-hidden="true">
       <svg viewBox="0 0 32 32" width="52" height="52">

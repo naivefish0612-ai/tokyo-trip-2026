@@ -394,3 +394,200 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
 .lb.on img { transform: none; }
 .lb-c { margin: 0; color: #d8d2ca; font-size: .74rem; text-align: center; }
 .lb-x { position: absolute; top: 12px; right: 12px; color: #fff; }
+
+/* ---------- 入口畫面（和風 × 賽博龐克） ----------
+   全部以 CSS 與 inline SVG 繪製：CSP 的 default-src 'none' 不允許任何外部
+   字型或圖檔，因此字體只能取系統既有的明朝／黑體，霓虹與網格一律用漸層做。 */
+
+#gate {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background: #05060D;
+  color: #EAF6FF;
+  opacity: 1;
+  transition: opacity .38s ease, transform .38s ease;
+}
+#gate.out { opacity: 0; transform: scale(1.06); pointer-events: none; }
+
+.gate-bg { position: absolute; inset: 0; }
+
+/* 日の丸：霓虹桃紅的圓，是整個畫面唯一的光源 */
+.gate-sun {
+  position: absolute; left: 50%; top: 46%;
+  width: min(78vw, 430px); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%,
+      rgba(255,45,120,.95) 0%, rgba(255,45,120,.55) 42%,
+      rgba(120,20,90,.28) 62%, rgba(0,0,0,0) 72%);
+  filter: blur(2px);
+}
+
+/* 鳥居：站在圓前的剪影，描邊發青色霓虹光 */
+/* 置於內容流中而非絕對定位：鳥居當背景時，橫樑會隨視窗尺寸壓到標題上，
+   且標題在大螢幕會高過開口，無法只靠一組位移值同時對準手機與桌面。 */
+.gate-torii {
+  width: clamp(92px, 26vw, 124px);
+  margin: 0 auto 16px;
+  color: #38F5FF;
+  opacity: .92;
+}
+.gate-torii svg {          /* 覆寫全域 svg 22px 保底尺寸 */
+  width: 100%; height: auto;
+  filter: drop-shadow(0 0 6px rgba(56,245,255,.9))
+          drop-shadow(0 0 22px rgba(56,245,255,.45));
+}
+
+/* 透視地面網格 */
+.gate-grid {
+  position: absolute; left: -50%; right: -50%; bottom: 0; height: 52%;
+  background-image:
+    repeating-linear-gradient(to right,
+      rgba(56,245,255,.34) 0 1px, transparent 1px 62px),
+    repeating-linear-gradient(to bottom,
+      rgba(255,45,120,.30) 0 1px, transparent 1px 46px);
+  transform: perspective(300px) rotateX(70deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to bottom, transparent, #000 42%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%);
+}
+
+/* CRT 掃描線 */
+.gate-scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom, rgba(0,0,0,.32) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+.gate-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 42%,
+    transparent 30%, rgba(5,6,13,.72) 78%, #05060D 100%);
+}
+
+.gate-inner {
+  position: relative;
+  padding: 24px;
+  text-align: center;
+}
+
+.gate-kicker {
+  margin: 0 0 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .66rem; letter-spacing: .22em;
+  color: #38F5FF;
+  text-shadow: 0 0 10px rgba(56,245,255,.75);
+}
+
+/* 標題以明朝體排出和風骨架，再用前後兩層做霓虹色差 */
+.gate-title {
+  position: relative;
+  margin: 0;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", "Songti TC", serif;
+  font-size: clamp(4.2rem, 22vw, 8.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .1em;
+  text-indent: .1em;              /* 補回字距造成的右偏 */
+  color: #F7FBFF;
+  text-shadow: 0 0 18px rgba(255,255,255,.35),
+               0 0 52px rgba(255,45,120,.55);
+}
+.gate-title::before,
+.gate-title::after {
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  text-indent: .1em;
+}
+.gate-title::before { color: #FF2D78; transform: translate(-3px, 1px); opacity: .82; }
+.gate-title::after  { color: #38F5FF; transform: translate(3px, -1px); opacity: .72; }
+
+.gate-sub {
+  margin: 14px 0 0;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", serif;
+  font-size: .92rem; letter-spacing: .14em;
+  color: rgba(234,246,255,.86);
+}
+
+.gate-rule {
+  width: 132px; height: 1px; margin: 22px auto;
+  background: linear-gradient(to right, transparent, #FF2D78, #38F5FF, transparent);
+}
+
+.gate-enter {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 15px 40px;
+  background: rgba(56,245,255,.07);
+  border: 1px solid rgba(56,245,255,.75);
+  border-radius: 2px;
+  color: #EAF6FF;
+  box-shadow: 0 0 16px rgba(56,245,255,.32), inset 0 0 20px rgba(56,245,255,.12);
+  transition: background .2s ease, box-shadow .2s ease, color .2s ease;
+}
+.gate-enter-ja {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", serif;
+  font-size: 1.16rem; font-weight: 600; letter-spacing: .16em;
+}
+.gate-enter-en {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .6rem; letter-spacing: .34em;
+  color: #38F5FF;
+}
+.gate-enter:hover, .gate-enter:focus-visible {
+  background: rgba(56,245,255,.18);
+  box-shadow: 0 0 26px rgba(56,245,255,.6), inset 0 0 26px rgba(56,245,255,.2);
+  outline: none;
+}
+.gate-enter:active { transform: translateY(1px); }
+
+.gate-foot {
+  margin: 20px 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .58rem; letter-spacing: .2em;
+  color: rgba(234,246,255,.45);
+}
+
+/* 直書標語：和風的關鍵，靠右垂直排列 */
+.gate-vert {
+  position: absolute; right: 5vw; top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  writing-mode: vertical-rl;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", serif;
+  font-size: .82rem; letter-spacing: .3em;
+  color: rgba(56,245,255,.62);
+  text-shadow: 0 0 12px rgba(56,245,255,.45);
+}
+@media (max-width: 380px) { .gate-vert { display: none; } }
+
+/* 動態效果：霓虹呼吸與偶發的訊號故障 */
+@keyframes gate-pulse {
+  0%, 100% { opacity: .92; }
+  50%      { opacity: .66; }
+}
+@keyframes gate-glitch {
+  0%, 92%, 100% { transform: translate(-3px, 1px); }
+  94%           { transform: translate(-8px, -2px) skewX(-6deg); }
+  96%           { transform: translate(-1px, 3px) skewX(4deg); }
+}
+@keyframes gate-glitch-alt {
+  0%, 92%, 100% { transform: translate(3px, -1px); }
+  94%           { transform: translate(8px, 2px) skewX(6deg); }
+  96%           { transform: translate(1px, -3px) skewX(-4deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gate-torii { animation: gate-pulse 3.4s ease-in-out infinite; }
+  .gate-title::before { animation: gate-glitch 5.5s steps(1, end) infinite; }
+  .gate-title::after  { animation: gate-glitch-alt 5.5s steps(1, end) infinite; }
+}
+
+/* 窄螢幕：kicker 的寬字距會斷成兩行，收緊以維持單行 */
+@media (max-width: 400px) {
+  .gate-kicker { font-size: .56rem; letter-spacing: .13em; }
+}

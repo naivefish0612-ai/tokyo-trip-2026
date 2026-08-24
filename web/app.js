@@ -655,7 +655,24 @@ document.addEventListener('DOMContentLoaded', function () {
     if (input.value) attempt(input.value, remember.checked);
   });
 
+  /* 入口畫面：一律先出現，即使已記住密碼也要按過「起動」才進入。
+   * 記住的密碼在按下之後才拿去解密，行程在此之前不會出現在畫面上。 */
+  var gate = document.getElementById('gate');
+  var lock = document.getElementById('lock');
   var saved = localStorage.getItem(KEY_PREFIX + 'pass') || sessionStorage.getItem(KEY_PREFIX + 'pass');
-  if (saved) attempt(saved, !!localStorage.getItem(KEY_PREFIX + 'pass'));
-  else input.focus();
+  var entered = false;
+
+  function enter() {
+    if (entered) return;
+    entered = true;
+    gate.classList.add('out');
+    setTimeout(function () {
+      gate.remove();
+      lock.hidden = false;
+      if (saved) attempt(saved, !!localStorage.getItem(KEY_PREFIX + 'pass'));
+      else input.focus();
+    }, 380);                      /* 與 #gate 的 transition 時間一致 */
+  }
+
+  document.getElementById('gate-enter').addEventListener('click', enter);
 });
