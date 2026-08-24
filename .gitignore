@@ -12,3 +12,6 @@ keystore.properties
 # 網站建置產物與密碼
 web-build/
 web/.passphrase
+
+# 行程資料為明文，且 repo 為公開
+trip-data.json
