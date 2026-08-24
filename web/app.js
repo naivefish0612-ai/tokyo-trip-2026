@@ -131,11 +131,56 @@ function photoEl(spot, cls) {
   if (spot.photo) {
     return el('img', { src: spot.photo, alt: spot.nameZh, loading: 'lazy', decoding: 'async', class: cls || null });
   }
+  if (spot.illustration) {
+    return handDrawnIllustration(spot.illustration, cls);
+  }
   var hue = 0; for (var i = 0; i < spot.id.length; i++) hue = (hue * 31 + spot.id.charCodeAt(i)) % 360;
   return el('div', {
     class: (cls ? cls + ' ' : '') + 'noimg',
     style: 'background:linear-gradient(150deg,hsl(' + hue + ',42%,38%),hsl(' + ((hue + 45) % 360) + ',48%,58%))'
   });
+}
+
+/** 找不到合適實景照的景點，用手繪風格插畫取代純色背景（見 ILLUSTRATIONS）。 */
+var ILLUSTRATIONS = {
+  /* TOKYO DREAM PARK：階梯狀的複合娛樂大樓、屋頂天線與煙火般的星芒。 */
+  dreampark: [
+    'M8,88 L92,88',
+    'M22,88 L22,58 L54,58 L54,88',
+    'M30,58 L30,36 L46,36 L46,58',
+    'M34,36 L34,20 L42,20 L42,36',
+    'M34,20 L42,20',
+    'M38,20 L38,10',
+    'M38,13 L20,2', 'M38,13 L56,2',
+    'M70,16 L72,22 L78,23 L72,24 L70,30 L68,24 L62,23 L68,22 Z',
+    'M62,50 L64,55 L69,56 L64,57 L62,62 L60,57 L55,56 L60,55 Z'
+  ],
+  /* 皮克斯的世界展：可走進去的畫框世界、票根與滿場星芒，不描繪任何角色。 */
+  pixar: [
+    'M22,18 h44 a6,6 0 0 1 6,6 v42 a6,6 0 0 1 -6,6 h-44 a6,6 0 0 1 -6,-6 v-42 a6,6 0 0 1 6,-6 Z',
+    'M38,38 C48,34 58,40 54,48 C51,54 42,52 44,46 C45,42 50,42 50,45',
+    'M30,30 L32,35 L37,36 L32,37 L30,42 L28,37 L23,36 L28,35 Z',
+    'M65,54 L67,59 L72,60 L67,61 L65,66 L63,61 L58,60 L63,59 Z',
+    'M14,76 h34 v16 h-34 Z',
+    'M31,76 v16'
+  ]
+};
+function handDrawnIllustration(key, cls) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var wrap = el('div', {
+    class: (cls ? cls + ' ' : '') + 'noimg illus-spot',
+    style: 'background:linear-gradient(160deg,#F3D9C8,#EBC7BE 55%,#CFAFAE)'
+  });
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('aria-hidden', 'true');
+  (ILLUSTRATIONS[key] || []).forEach(function (d) {
+    var p = document.createElementNS(ns, 'path');
+    p.setAttribute('d', d);
+    svg.appendChild(p);
+  });
+  wrap.appendChild(svg);
+  return wrap;
 }
 /** 打卡進度環。載入時由 0 掃到實際比例。 */
 function ring(done, total) {

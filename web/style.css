@@ -115,6 +115,12 @@ a { color: var(--primary); }
 .hero.small { height: 150px; }
 /* 有照片時是 <img>，沒有照片時是漸層的 <div class="noimg">，兩者都要撐滿 */
 .hero img, .hero .noimg { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 無實景照也找不到合適授權圖的景點：手繪風格插畫置中於暖色底 */
+.illus-spot { display: flex; align-items: center; justify-content: center; }
+.illus-spot svg {
+  width: 46%; height: 46%; fill: none; stroke: #6B4A3D;
+  stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .78;
+}
 .hero .scrim {
   position: absolute; inset: 0;
   background: linear-gradient(to bottom,
