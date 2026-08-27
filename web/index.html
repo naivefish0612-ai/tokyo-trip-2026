@@ -30,34 +30,53 @@
 </head>
 <body>
 
-<!-- 入口畫面：渋谷スクランブル交差点。點擊「起動」之後才進入解鎖，
-     行程在此之前完全不出現。視覺全以 CSS 與 inline SVG 繪製，
-     未引入任何外部字型或圖檔（CSP 只允許同源）。 -->
+<!-- 入口畫面：渋谷スクランブル交差点。按下「起動」之後才進解鎖，
+     行程在此之前完全不出現。整個場景是 CSS 與 inline SVG 畫的，
+     沒有任何外部字型或圖檔（CSP 只允許同源）。 -->
 <div id="gate">
   <div class="gate-bg" aria-hidden="true">
-    <div class="gate-sun"></div>
+    <div class="sc-sky"></div>
+    <div class="sc-glow"></div>
 
-    <!-- 遠景天際線 -->
     <svg class="sc-skyline" viewBox="0 0 1200 300" preserveAspectRatio="none">
       <path d="M0 300 L0 111 L40 111 L40 165 L108 165 L108 171 L154 171 L154 163 L214 163 L214 216 L266 216 L266 213 L312 213 L312 229 L364 229 L364 234 L392 234 L392 236 L420 236 L420 231 L472 231 L472 256 L532 256 L532 246 L584 246 L584 253 L612 253 L612 264 L664 264 L664 250 L716 250 L716 221 L750 221 L750 206 L818 206 L818 198 L878 198 L878 206 L946 206 L946 230 L992 230 L992 166 L1020 166 L1020 210 L1066 210 L1066 159 L1100 159 L1100 174 L1146 174 L1146 123 L1180 123 L1180 121 L1200 121 L1200 300 Z"/>
     </svg>
 
-    <!-- 地平線上的街廓：填住大樓與路口之間的空檔 -->
+    <!-- 掛招牌的暗牆 -->
+    <div class="sc-tower sc-tower-l"><div class="sc-win"></div></div>
+    <div class="sc-tower sc-tower-r"><div class="sc-win"></div></div>
     <div class="sc-mid"></div>
 
-    <!-- 路口左側大樓：亮窗、直書霓虹招牌、等化器小看板 -->
-    <div class="sc-tower sc-tower-l">
-      <div class="sc-win"></div>
-      <div class="sc-sign sc-sign-1"><span>居酒屋</span></div>
-      <div class="sc-sign sc-sign-2"><span>両替</span></div>
-      <div class="sc-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    </div>
-
-    <!-- 路口右側大樓 -->
-    <div class="sc-tower sc-tower-r">
-      <div class="sc-win"></div>
-      <div class="sc-sign sc-sign-3"><span>ラーメン</span></div>
-      <div class="sc-sign sc-sign-4"><span>カラオケ</span></div>
+    <!-- 霓虹招牌牆 -->
+    <div class="sc-wall">
+      <span class="sc-sign sc-v sc-s1">居酒屋</span>
+      <span class="sc-sign sc-v sc-s2">ラーメン</span>
+      <span class="sc-tube sc-s3 sc-r2"></span>
+      <span class="sc-sign sc-v sc-s4">スナック</span>
+      <span class="sc-sign sc-v sc-s5">焼肉</span>
+      <span class="sc-ring sc-s6"></span>
+      <span class="sc-sign sc-h sc-s7 sc-r2">BAR</span>
+      <span class="sc-ring sc-s8 sc-r2"></span>
+      <span class="sc-sign sc-h sc-s9 sc-r2">24H</span>
+      <span class="sc-sign sc-h sc-s10 sc-r2">▶</span>
+      <span class="sc-sign sc-h sc-s11">純喫茶</span>
+      <span class="sc-sign sc-v sc-s12">麻雀</span>
+      <span class="sc-sign sc-h sc-s13 sc-c">TOKYO</span>
+      <span class="sc-ring sc-s14 sc-c"></span>
+      <span class="sc-sign sc-h sc-s15 sc-c">珈琲</span>
+      <span class="sc-sign sc-h sc-s16 sc-c">横浜</span>
+      <span class="sc-sign sc-v sc-s17">銭湯</span>
+      <span class="sc-sign sc-h sc-s18">LIVE</span>
+      <span class="sc-sign sc-v sc-s19">カラオケ</span>
+      <span class="sc-box sc-s20"></span>
+      <span class="sc-sign sc-v sc-s21">焼鳥</span>
+      <span class="sc-tube sc-s22"></span>
+      <span class="sc-sign sc-h sc-s23">酒</span>
+      <span class="sc-sign sc-v sc-s24">両替</span>
+      <span class="sc-ring sc-s25"></span>
+      <span class="sc-sign sc-v sc-s26">洋服</span>
+      <span class="sc-tube sc-s27"></span>
+      <span class="sc-sign sc-h sc-s28">夜</span>
     </div>
 
     <!-- 正面大型看板：四張輪播 -->
@@ -72,7 +91,6 @@
         </div>
         <div class="sc-screen-scan"></div>
       </div>
-      <div class="sc-board-glow"></div>
     </div>
 
     <!-- 行人號誌：青信号 -->
@@ -83,14 +101,14 @@
       </svg>
     </div>
 
-    <!-- 斑馬線：兩條直交、一條對角，是「スクランブル」的形狀 -->
-    <div class="sc-ground">
+    <!-- 路面 -->
+    <div class="sc-road">
       <div class="sc-zebra sc-zebra-a"></div>
       <div class="sc-zebra sc-zebra-b"></div>
       <div class="sc-zebra sc-zebra-c"></div>
       <div class="sc-zebra sc-zebra-d"></div>
       <div class="sc-zebra sc-zebra-e"></div>
-      <div class="sc-reflect"></div>
+      <div class="sc-pool"></div>
     </div>
 
     <!-- 掠過的車燈 -->
@@ -98,7 +116,7 @@
     <div class="sc-car sc-car-2"></div>
     <div class="sc-car sc-car-3"></div>
 
-    <!-- 人群：奇數往右、偶數往左，各自有深度與步伐 -->
+    <!-- 人群：奇數往右、偶數往左 -->
     <div class="sc-crowd">
       <span class="ped"><i></i></span>
       <span class="ped"><i></i></span>
@@ -116,8 +134,8 @@
 
     <div class="sc-rain sc-rain-a"></div>
     <div class="sc-rain sc-rain-b"></div>
-    <div class="gate-scan"></div>
-    <div class="gate-vignette"></div>
+    <div class="sc-scan"></div>
+    <div class="sc-vig"></div>
   </div>
 
   <div class="gate-inner">
@@ -143,7 +161,6 @@
     <p class="gate-foot">ENCRYPTED ・ AES-256-GCM ・ 要 認 証</p>
   </div>
 
-  <!-- 底部跑馬燈 -->
   <p class="sc-ticker" aria-hidden="true">
     <span class="sc-tick">
       <i>渋谷スクランブル交差点 ・ 夜の街へ、ようこそ ・ 東京 ⇄ 横浜 ・ 2026.09.25 — 10.02 ・ </i>
