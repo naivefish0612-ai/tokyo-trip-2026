@@ -30,12 +30,92 @@
 </head>
 <body>
 
-<!-- 入口畫面：點擊「起動」之後才進入解鎖，行程在此之前完全不出現。
-     視覺全以 CSS 與 inline SVG 繪製，未引入任何外部字型或圖檔（CSP 只允許同源）。 -->
+<!-- 入口畫面：渋谷スクランブル交差点。點擊「起動」之後才進入解鎖，
+     行程在此之前完全不出現。視覺全以 CSS 與 inline SVG 繪製，
+     未引入任何外部字型或圖檔（CSP 只允許同源）。 -->
 <div id="gate">
   <div class="gate-bg" aria-hidden="true">
     <div class="gate-sun"></div>
-    <div class="gate-grid"></div>
+
+    <!-- 遠景天際線 -->
+    <svg class="sc-skyline" viewBox="0 0 1200 300" preserveAspectRatio="none">
+      <path d="M0 300 L0 111 L40 111 L40 165 L108 165 L108 171 L154 171 L154 163 L214 163 L214 216 L266 216 L266 213 L312 213 L312 229 L364 229 L364 234 L392 234 L392 236 L420 236 L420 231 L472 231 L472 256 L532 256 L532 246 L584 246 L584 253 L612 253 L612 264 L664 264 L664 250 L716 250 L716 221 L750 221 L750 206 L818 206 L818 198 L878 198 L878 206 L946 206 L946 230 L992 230 L992 166 L1020 166 L1020 210 L1066 210 L1066 159 L1100 159 L1100 174 L1146 174 L1146 123 L1180 123 L1180 121 L1200 121 L1200 300 Z"/>
+    </svg>
+
+    <!-- 地平線上的街廓：填住大樓與路口之間的空檔 -->
+    <div class="sc-mid"></div>
+
+    <!-- 路口左側大樓：亮窗、直書霓虹招牌、等化器小看板 -->
+    <div class="sc-tower sc-tower-l">
+      <div class="sc-win"></div>
+      <div class="sc-sign sc-sign-1"><span>居酒屋</span></div>
+      <div class="sc-sign sc-sign-2"><span>両替</span></div>
+      <div class="sc-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <!-- 路口右側大樓 -->
+    <div class="sc-tower sc-tower-r">
+      <div class="sc-win"></div>
+      <div class="sc-sign sc-sign-3"><span>ラーメン</span></div>
+      <div class="sc-sign sc-sign-4"><span>カラオケ</span></div>
+    </div>
+
+    <!-- 正面大型看板：四張輪播 -->
+    <div class="sc-board">
+      <div class="sc-screen">
+        <div class="sc-reel">
+          <div class="sc-slide sc-slide-a">S C R A M B L E</div>
+          <div class="sc-slide sc-slide-b">渋 谷</div>
+          <div class="sc-slide sc-slide-c">09.25 — 10.02</div>
+          <div class="sc-slide sc-slide-d">東 京</div>
+          <div class="sc-slide sc-slide-a">S C R A M B L E</div>
+        </div>
+        <div class="sc-screen-scan"></div>
+      </div>
+      <div class="sc-board-glow"></div>
+    </div>
+
+    <!-- 行人號誌：青信号 -->
+    <div class="sc-signal">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12.6" cy="4" r="2.5"/>
+        <path d="M10.4 8.1 L13.9 7.5 L17.2 12.4 L15.4 13.6 L12.9 10.2 L12.3 13.5 L15.4 17.3 L14.2 22.2 L11.9 21.7 L12.9 17.9 L9.3 14.3 L7.5 18.6 L5.4 17.5 L8.6 11.1 Z"/>
+      </svg>
+    </div>
+
+    <!-- 斑馬線：兩條直交、一條對角，是「スクランブル」的形狀 -->
+    <div class="sc-ground">
+      <div class="sc-zebra sc-zebra-a"></div>
+      <div class="sc-zebra sc-zebra-b"></div>
+      <div class="sc-zebra sc-zebra-c"></div>
+      <div class="sc-zebra sc-zebra-d"></div>
+      <div class="sc-zebra sc-zebra-e"></div>
+      <div class="sc-reflect"></div>
+    </div>
+
+    <!-- 掠過的車燈 -->
+    <div class="sc-car sc-car-1"></div>
+    <div class="sc-car sc-car-2"></div>
+    <div class="sc-car sc-car-3"></div>
+
+    <!-- 人群：奇數往右、偶數往左，各自有深度與步伐 -->
+    <div class="sc-crowd">
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+      <span class="ped"><i></i></span>
+    </div>
+
+    <div class="sc-rain sc-rain-a"></div>
+    <div class="sc-rain sc-rain-b"></div>
     <div class="gate-scan"></div>
     <div class="gate-vignette"></div>
   </div>
@@ -63,7 +143,13 @@
     <p class="gate-foot">ENCRYPTED ・ AES-256-GCM ・ 要 認 証</p>
   </div>
 
-  <p class="gate-vert" aria-hidden="true">夜の街へ、ようこそ</p>
+  <!-- 底部跑馬燈 -->
+  <p class="sc-ticker" aria-hidden="true">
+    <span class="sc-tick">
+      <i>渋谷スクランブル交差点 ・ 夜の街へ、ようこそ ・ 東京 ⇄ 横浜 ・ 2026.09.25 — 10.02 ・ </i>
+      <i>渋谷スクランブル交差点 ・ 夜の街へ、ようこそ ・ 東京 ⇄ 横浜 ・ 2026.09.25 — 10.02 ・ </i>
+    </span>
+  </p>
 </div>
 
 <!-- 解鎖畫面：資料在通過這一關之前都還是密文 -->

@@ -401,9 +401,14 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
 .lb-c { margin: 0; color: #d8d2ca; font-size: .74rem; text-align: center; }
 .lb-x { position: absolute; top: 12px; right: 12px; color: #fff; }
 
-/* ---------- 入口畫面（和風 × 賽博龐克） ----------
+/* ---------- 入口畫面：渋谷スクランブル交差点 ----------
+   夜の交差点：霓虹大樓、大型看板、雨、掠過的車燈、來回穿越的人群。
    全部以 CSS 與 inline SVG 繪製：CSP 的 default-src 'none' 不允許任何外部
-   字型或圖檔，因此字體只能取系統既有的明朝／黑體，霓虹與網格一律用漸層做。 */
+   字型或圖檔，因此字體只能取系統既有的明朝／黑體，霓虹、招牌、斑馬線、
+   亮窗一律用漸層與遮罩做出來。
+   動態只改 transform／opacity（合成器就能處理，手機上不掉幀），而且全部
+   收在 prefers-reduced-motion: no-preference 裡 —— 關掉動畫後仍是一張
+   完整的靜態夜景，不會只剩空畫面。 */
 
 #gate {
   position: fixed; inset: 0; z-index: 200;
@@ -416,27 +421,375 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
 }
 #gate.out { opacity: 0; transform: scale(1.06); pointer-events: none; }
 
-.gate-bg { position: absolute; inset: 0; }
+/* 場景層。畫的順序即前後關係：輝光 → 天際線 → 大樓看板 → 路面 →
+   車燈 → 人群 → 雨 → 掃描線 → 暗角，不另外用 z-index。 */
+.gate-bg { position: absolute; inset: 0; overflow: hidden; }
 
-/* 日の丸：霓虹桃紅的圓，是整個畫面唯一的光源 */
+/* 都市輝光：路口的主光源，桃紅打在低雲上 */
 .gate-sun {
-  position: absolute; left: 50%; top: 46%;
-  width: min(78vw, 430px); aspect-ratio: 1;
+  position: absolute; left: 50%; top: 54%;
+  width: min(130vw, 860px); aspect-ratio: 1;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%,
-      rgba(255,45,120,.95) 0%, rgba(255,45,120,.55) 42%,
-      rgba(120,20,90,.28) 62%, rgba(0,0,0,0) 72%);
-  filter: blur(2px);
+      rgba(255,45,120,.50) 0%, rgba(255,45,120,.26) 32%,
+      rgba(96,26,124,.20) 54%, rgba(0,0,0,0) 71%);
+  filter: blur(8px);
+}
+
+/* 遠景天際線：只是剪影，靠上緣的一點青光把輪廓拉出來 */
+.sc-skyline {
+  position: absolute; left: -4%; right: -4%; bottom: 30%;
+  width: 108%; height: 22%;
+  fill: #070B16;
+  filter: drop-shadow(0 -1px 0 rgba(56,245,255,.22));
+}
+
+/* ---- 路口兩側的大樓 ---- */
+.sc-tower {
+  position: absolute;
+  background: linear-gradient(to bottom, #0B1122 0%, #070A14 100%);
+  box-shadow: inset 0 0 0 1px rgba(56,245,255,.08),
+              0 0 40px rgba(5,6,13,.9);
+  overflow: hidden;
+}
+.sc-tower-l {
+  left: -4vw; top: 4%; width: min(28vw, 168px); height: 70%;
+  clip-path: polygon(0 9%, 50% 9%, 50% 0, 100% 0, 100% 100%, 0 100%);
+}
+.sc-tower-r {
+  right: -4vw; top: 11%; width: min(24vw, 146px); height: 62%;
+  clip-path: polygon(0 0, 46% 0, 46% 12%, 100% 12%, 100% 100%, 0 100%);
+}
+
+/* 地平線上的街廓：一整排帶亮窗的低樓，補住大樓與路口之間的空白 */
+.sc-mid {
+  position: absolute; left: -2%; right: -2%; bottom: 26%; height: 16%;
+  background: #0C1122;
+  clip-path: polygon(
+    0 38%, 9% 38%, 9% 16%, 18% 16%, 18% 46%, 27% 46%, 27% 26%, 36% 26%,
+    36% 8%, 45% 8%, 45% 34%, 55% 34%, 55% 18%, 64% 18%, 64% 42%, 73% 42%,
+    73% 12%, 82% 12%, 82% 30%, 91% 30%, 91% 20%, 100% 20%, 100% 100%, 0 100%);
+  box-shadow: 0 -1px 0 rgba(56,245,255,.18);
+}
+.sc-mid::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(255,206,138,.42) 0 2px, transparent 2px 9px);
+  mask-image: repeating-linear-gradient(to right, #000 0 3px, transparent 3px 10px);
+  -webkit-mask-image: repeating-linear-gradient(to right, #000 0 3px, transparent 3px 10px);
+}
+
+/* 亮窗：一層漸層當窗光、另一層當遮罩切出格子，兩組週期互質才不會太整齊 */
+.sc-win { position: absolute; inset: 0; }
+.sc-win::before, .sc-win::after {
+  content: ''; position: absolute; inset: 0;
+}
+.sc-win::before {
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(255,206,138,.32) 0 3px, transparent 3px 11px);
+  mask-image: repeating-linear-gradient(to right, #000 0 5px, transparent 5px 13px);
+  -webkit-mask-image: repeating-linear-gradient(to right, #000 0 5px, transparent 5px 13px);
+}
+.sc-win::after {
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(120,222,255,.20) 0 2px, transparent 2px 17px);
+  mask-image: repeating-linear-gradient(to right, #000 0 4px, transparent 4px 9px);
+  -webkit-mask-image: repeating-linear-gradient(to right, #000 0 4px, transparent 4px 9px);
+}
+
+/* 直書霓虹招牌：外框發光、字帶餘暉，偶爾閃一下 */
+.sc-sign {
+  position: absolute;
+  padding: 7px 4px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  writing-mode: vertical-rl;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", serif;
+  font-size: clamp(.52rem, 2.4vw, .78rem);
+  letter-spacing: .18em;
+  line-height: 1;
+  background: rgba(5,6,13,.55);
+  box-shadow: 0 0 12px currentColor, inset 0 0 10px rgba(255,255,255,.10);
+  text-shadow: 0 0 8px currentColor;
+}
+.sc-sign span { color: #F4FAFF; }
+.sc-sign-1 { right: 8%;  top: 8%;  color: #FF2D78; }
+.sc-sign-2 { right: 46%; top: 40%; color: #FFC64D; }
+.sc-sign-3 { left: 10%;  top: 14%; color: #38F5FF; }
+.sc-sign-4 { left: 48%;  top: 48%; color: #FF2D78; }
+
+/* 小看板：七根跳動的等化器 */
+.sc-eq {
+  position: absolute; left: 8%; bottom: 12%;
+  display: flex; align-items: flex-end; gap: 3px;
+  width: 46%; height: 9%;
+  padding: 4px;
+  background: rgba(5,6,13,.72);
+  box-shadow: inset 0 0 0 1px rgba(56,245,255,.35), 0 0 14px rgba(56,245,255,.22);
+}
+.sc-eq i {
+  flex: 1; height: 100%;
+  transform-origin: 50% 100%;
+  transform: scaleY(.45);
+  background: linear-gradient(to top, #38F5FF, #FF2D78);
+}
+
+/* ---- 正面大型看板 ---- */
+.sc-board {
+  position: absolute; left: 50%; top: 6%;
+  width: min(42vw, 258px); aspect-ratio: 16 / 10;
+  transform: translateX(-50%);
+}
+.sc-screen {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  border: 1px solid rgba(234,246,255,.22);
+  border-radius: 3px;
+  background: #05060D;
+  box-shadow: 0 0 30px rgba(255,45,120,.35), 0 0 60px rgba(56,245,255,.18);
+}
+/* 五張投影片、最後一張與第一張相同，捲到底時接回起點不會有回捲動作 */
+.sc-reel {
+  display: flex; flex-direction: column;
+  height: 500%;
+}
+.sc-slide {
+  display: flex; align-items: center; justify-content: center;
+  height: 20%;
+  padding: 0 6%;
+  text-align: center;
+  font-size: clamp(.62rem, 3vw, 1rem);
+  letter-spacing: .12em;
+}
+.sc-slide-a {
+  background: linear-gradient(135deg, #FF2D78, #7A1350);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #FFF3F8;
+}
+.sc-slide-b {
+  background: linear-gradient(135deg, #0B4A5E, #38F5FF);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", serif;
+  font-size: clamp(1rem, 5.5vw, 1.9rem);
+  color: #04121A;
+}
+.sc-slide-c {
+  background: linear-gradient(135deg, #10162B, #05060D);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #38F5FF;
+}
+.sc-slide-d {
+  background: linear-gradient(135deg, #FFC64D, #B4600B);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
+               "Noto Serif JP", "Noto Serif TC", serif;
+  font-size: clamp(1rem, 5.5vw, 1.9rem);
+  color: #1B1200;
+}
+.sc-screen-scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(to bottom,
+    rgba(0,0,0,.34) 0 1px, transparent 1px 3px);
+}
+/* 看板打在空氣裡的光 */
+.sc-board-glow {
+  position: absolute; left: -24%; right: -24%; top: -18%; bottom: -34%;
+  background: radial-gradient(ellipse at 50% 40%,
+    rgba(255,45,120,.16) 0%, rgba(56,245,255,.06) 44%, transparent 72%);
+  filter: blur(4px);
+}
+
+/* ---- 行人號誌 ---- */
+.sc-signal {
+  position: absolute; left: 5vw; bottom: 24%;
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 34px;
+  border: 1px solid rgba(234,246,255,.30);
+  border-radius: 3px;
+  background: #05060D;
+  box-shadow: 0 0 14px rgba(124,255,155,.30);
+}
+.sc-signal::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  width: 2px; height: 46px;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, rgba(234,246,255,.22), transparent);
+}
+.sc-signal svg {
+  width: 20px; height: 24px;
+  fill: #7CFF9B;
+  filter: drop-shadow(0 0 5px rgba(124,255,155,.95));
+}
+
+/* ---- 路面：斑馬線 ----
+   整塊平面用 rotateX 壓成地面，子元素在平面的座標系裡排：
+   下緣是眼前、上緣是遠處，上緣用遮罩淡出當作地平線。 */
+.sc-ground {
+  position: absolute; left: -55%; right: -55%; bottom: 0; height: 56%;
+  background: linear-gradient(to top, #141926 0%, #0A0E18 76%, #05060D 100%);
+  transform: perspective(850px) rotateX(48deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 12%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 12%);
+  overflow: hidden;
+}
+.sc-zebra { position: absolute; }
+/* 往對街去的那條：白條與行進方向同向，於是在透視裡收向地平線 */
+.sc-zebra-a {
+  left: 31%; right: 41%; top: 0; bottom: 0;
+  background: repeating-linear-gradient(to right,
+    rgba(240,250,255,.66) 0 20px, transparent 20px 46px);
+}
+/* 橫在眼前的那條 */
+.sc-zebra-b {
+  left: 0; right: 0; top: 62%; height: 34%;
+  background: repeating-linear-gradient(to bottom,
+    rgba(240,250,255,.62) 0 18px, transparent 18px 46px);
+}
+/* 對角線：スクランブル的招牌 */
+.sc-zebra-c {
+  left: -8%; right: -8%; top: 12%; height: 30%;
+  transform: rotate(-22deg);
+  background: repeating-linear-gradient(to bottom,
+    rgba(240,250,255,.40) 0 14px, transparent 14px 38px);
+}
+/* 右邊那條：兩條平行的縱向斑馬線加上對角線，才是スクランブル的形狀 */
+.sc-zebra-e {
+  left: 60%; right: 12%; top: 0; bottom: 0;
+  background: repeating-linear-gradient(to right,
+    rgba(240,250,255,.58) 0 20px, transparent 20px 46px);
+}
+
+/* 對街那條：遠側收在地平線前，路口才是封閉的 */
+.sc-zebra-d {
+  left: 0; right: 0; top: 6%; height: 11%;
+  background: repeating-linear-gradient(to bottom,
+    rgba(240,250,255,.34) 0 7px, transparent 7px 17px);
+}
+
+/* 濕柏油上的霓虹倒影 */
+.sc-reflect {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 34% 26% at 26% 84%, rgba(255,45,120,.50), transparent 70%),
+    radial-gradient(ellipse 30% 22% at 72% 76%, rgba(56,245,255,.42), transparent 70%),
+    radial-gradient(ellipse 24% 18% at 50% 96%, rgba(255,198,77,.32), transparent 70%);
+  filter: blur(6px);
+  mix-blend-mode: screen;
+}
+
+/* ---- 掠過的車燈 ---- */
+.sc-car {
+  position: absolute; left: 0;
+  height: 3px; width: 30vw;
+  border-radius: 3px;
+  opacity: 0;
+  filter: blur(1px);
+}
+.sc-car-1 {
+  bottom: 23%;
+  background: linear-gradient(to right, transparent,
+    rgba(255,90,130,.85) 60%, rgba(255,236,242,.95) 86%, transparent);
+}
+.sc-car-2 {
+  bottom: 25.5%; height: 4px; width: 38vw;
+  background: linear-gradient(to left, transparent,
+    rgba(140,230,255,.80) 60%, rgba(255,255,255,.95) 88%, transparent);
+}
+.sc-car-3 {
+  bottom: 21%; height: 2px; width: 24vw;
+  background: linear-gradient(to right, transparent,
+    rgba(255,198,77,.70) 66%, rgba(255,247,224,.9) 90%, transparent);
+}
+
+/* ---- 人群 ----
+   剪影只有身體與頭：這個尺寸下畫五官反而糊成一團。
+   左右移動放在 .ped、上下的步伐放在裡面的 <i>，兩個 transform 才不會互相覆寫。 */
+.sc-crowd { position: absolute; left: 0; right: 0; bottom: 24px; height: 22%; }
+.ped { position: absolute; left: 0; aspect-ratio: .42; }
+.ped i {
+  position: relative; display: block;
+  width: 100%; height: 100%;
+  background: #02040A;
+  border-radius: 42% 42% 16% 16% / 22% 22% 8% 8%;
+  box-shadow: 0 0 7px rgba(56,245,255,.42), inset 0 -5px 7px rgba(255,45,120,.16);
+}
+.ped i::before {
+  content: ''; position: absolute; left: 50%; top: -38%;
+  width: 56%; aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: inherit;
+  box-shadow: 0 0 5px rgba(56,245,255,.40);
+}
+/* 每個人的深度：越遠越小、越淡、走得越慢。靜態時 translateX 讓他們散開，
+   動畫一跑就會被 keyframes 覆寫掉。 */
+.ped:nth-child(1 ) { bottom: 0%;   height: 42px; opacity: 0.98; transform: translateX(12vw); animation-duration: 11s; animation-delay: -1s; }
+.ped:nth-child(2 ) { bottom: 5%;   height: 38px; opacity: 0.95; transform: translateX(74vw); animation-duration: 13s; animation-delay: -8s; }
+.ped:nth-child(3 ) { bottom: 10%;  height: 34px; opacity: 0.92; transform: translateX(38vw); animation-duration: 12s; animation-delay: -5s; }
+.ped:nth-child(4 ) { bottom: 15%;  height: 30px; opacity: 0.88; transform: translateX(88vw); animation-duration: 16s; animation-delay: -3s; }
+.ped:nth-child(5 ) { bottom: 20%;  height: 27px; opacity: 0.84; transform: translateX(56vw); animation-duration: 14s; animation-delay: -11s; }
+.ped:nth-child(6 ) { bottom: 25%;  height: 24px; opacity: 0.79; transform: translateX(24vw); animation-duration: 18s; animation-delay: -6s; }
+.ped:nth-child(7 ) { bottom: 29%;  height: 21px; opacity: 0.74; transform: translateX(66vw); animation-duration: 15s; animation-delay: -13s; }
+.ped:nth-child(8 ) { bottom: 33%;  height: 19px; opacity: 0.69; transform: translateX(4vw); animation-duration: 20s; animation-delay: -2s; }
+.ped:nth-child(9 ) { bottom: 37%;  height: 17px; opacity: 0.64; transform: translateX(46vw); animation-duration: 17s; animation-delay: -15s; }
+.ped:nth-child(10) { bottom: 40%;  height: 15px; opacity: 0.59; transform: translateX(96vw); animation-duration: 22s; animation-delay: -9s; }
+.ped:nth-child(11) { bottom: 43%;  height: 14px; opacity: 0.55; transform: translateX(30vw); animation-duration: 19s; animation-delay: -17s; }
+.ped:nth-child(12) { bottom: 46%;  height: 12px; opacity: 0.5; transform: translateX(80vw); animation-duration: 24s; animation-delay: -4s; }
+
+/* ---- 雨 ----
+   一層漸層當雨絲、一層遮罩切成一根根；位移剛好一個週期，接縫看不出來。 */
+.sc-rain {
+  position: absolute; left: -20%; right: -20%; top: -10%; bottom: -10%;
+  transform: skewX(-11deg);
+}
+.sc-rain-a {
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(198,238,255,.13) 0 12px, transparent 12px 52px);
+  mask-image: repeating-linear-gradient(to right, #000 0 1px, transparent 1px 16px);
+  -webkit-mask-image: repeating-linear-gradient(to right, #000 0 1px, transparent 1px 16px);
+}
+.sc-rain-b {
+  background-image: repeating-linear-gradient(to bottom,
+    rgba(198,238,255,.08) 0 9px, transparent 9px 37px);
+  mask-image: repeating-linear-gradient(to right, #000 0 1px, transparent 1px 25px);
+  -webkit-mask-image: repeating-linear-gradient(to right, #000 0 1px, transparent 1px 25px);
+}
+
+/* CRT 掃描線 */
+.gate-scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom, rgba(0,0,0,.30) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+.gate-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 46%,
+    transparent 26%, rgba(5,6,13,.66) 76%, #05060D 100%);
+}
+
+/* ---- 中央文字 ---- */
+.gate-inner {
+  position: relative; z-index: 10;
+  padding: 24px;
+  text-align: center;
+}
+/* 背後的路口很亮也很雜，文字要壓一層暗幕才讀得出來 */
+.gate-inner::before {
+  content: ''; position: absolute; inset: -10% -14%; z-index: -1;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(5,6,13,.92) 0%, rgba(5,6,13,.70) 46%, rgba(5,6,13,0) 76%);
 }
 
 /* 鳥居：站在圓前的剪影，描邊發青色霓虹光 */
 /* 置於內容流中而非絕對定位：鳥居當背景時，橫樑會隨視窗尺寸壓到標題上，
    且標題在大螢幕會高過開口，無法只靠一組位移值同時對準手機與桌面。 */
 .gate-torii {
-  width: clamp(92px, 26vw, 124px);
-  margin: 0 auto 16px;
+  width: clamp(78px, 20vw, 106px);
+  margin: 0 auto 12px;
   color: #38F5FF;
   opacity: .92;
 }
@@ -444,39 +797,6 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
   width: 100%; height: auto;
   filter: drop-shadow(0 0 6px rgba(56,245,255,.9))
           drop-shadow(0 0 22px rgba(56,245,255,.45));
-}
-
-/* 透視地面網格 */
-.gate-grid {
-  position: absolute; left: -50%; right: -50%; bottom: 0; height: 52%;
-  background-image:
-    repeating-linear-gradient(to right,
-      rgba(56,245,255,.34) 0 1px, transparent 1px 62px),
-    repeating-linear-gradient(to bottom,
-      rgba(255,45,120,.30) 0 1px, transparent 1px 46px);
-  transform: perspective(300px) rotateX(70deg);
-  transform-origin: 50% 100%;
-  mask-image: linear-gradient(to bottom, transparent, #000 42%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%);
-}
-
-/* CRT 掃描線 */
-.gate-scan {
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    to bottom, rgba(0,0,0,.32) 0 1px, transparent 1px 3px);
-  mix-blend-mode: multiply;
-}
-.gate-vignette {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 42%,
-    transparent 30%, rgba(5,6,13,.72) 78%, #05060D 100%);
-}
-
-.gate-inner {
-  position: relative;
-  padding: 24px;
-  text-align: center;
 }
 
 .gate-kicker {
@@ -493,7 +813,7 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
   margin: 0;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
                "Noto Serif JP", "Noto Serif TC", "Songti TC", serif;
-  font-size: clamp(4.2rem, 22vw, 8.5rem);
+  font-size: clamp(3.6rem, 19vw, 7.4rem);
   font-weight: 600;
   line-height: 1;
   letter-spacing: .1em;
@@ -512,7 +832,7 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
 .gate-title::after  { color: #38F5FF; transform: translate(3px, -1px); opacity: .72; }
 
 .gate-sub {
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
                "Noto Serif JP", "Noto Serif TC", serif;
   font-size: .92rem; letter-spacing: .14em;
@@ -520,7 +840,7 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
 }
 
 .gate-rule {
-  width: 132px; height: 1px; margin: 22px auto;
+  width: 132px; height: 1px; margin: 18px auto;
   background: linear-gradient(to right, transparent, #FF2D78, #38F5FF, transparent);
 }
 
@@ -552,27 +872,27 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
 .gate-enter:active { transform: translateY(1px); }
 
 .gate-foot {
-  margin: 20px 0 0;
+  margin: 16px 0 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: .58rem; letter-spacing: .2em;
   color: rgba(234,246,255,.45);
 }
 
-/* 直書標語：和風的關鍵，靠右垂直排列 */
-.gate-vert {
-  position: absolute; right: 5vw; top: 50%;
-  transform: translateY(-50%);
-  margin: 0;
-  writing-mode: vertical-rl;
-  font-family: "Hiragino Mincho ProN", "Yu Mincho", YuMincho,
-               "Noto Serif JP", "Noto Serif TC", serif;
-  font-size: .82rem; letter-spacing: .3em;
-  color: rgba(56,245,255,.62);
-  text-shadow: 0 0 12px rgba(56,245,255,.45);
+/* ---- 底部跑馬燈：兩份相同的文字接成一條，捲過一份的寬度就回到原點 ---- */
+.sc-ticker {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 10;
+  margin: 0; padding: 5px 0;
+  overflow: hidden;
+  background: linear-gradient(to top, rgba(5,6,13,.95), rgba(5,6,13,.55));
+  border-top: 1px solid rgba(56,245,255,.20);
+  font-size: .6rem; letter-spacing: .16em;
+  color: rgba(56,245,255,.72);
+  text-shadow: 0 0 8px rgba(56,245,255,.4);
 }
-@media (max-width: 380px) { .gate-vert { display: none; } }
+.sc-tick { display: flex; width: max-content; }
+.sc-tick i { font-style: normal; white-space: nowrap; }
 
-/* 動態效果：霓虹呼吸與偶發的訊號故障 */
+/* ---- 動態 ---- */
 @keyframes gate-pulse {
   0%, 100% { opacity: .92; }
   50%      { opacity: .66; }
@@ -587,13 +907,119 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
   94%           { transform: translate(8px, 2px) skewX(6deg); }
   96%           { transform: translate(1px, -3px) skewX(-4deg); }
 }
+/* 招牌接觸不良：大部分時間亮著，偶爾連閃兩下 */
+@keyframes sc-flicker {
+  0%, 86%, 100% { opacity: 1; }
+  88%, 92%      { opacity: .28; }
+  90%, 94%      { opacity: 1; }
+}
+@keyframes sc-eq {
+  0%   { transform: scaleY(.18); }
+  100% { transform: scaleY(1); }
+}
+/* 五張投影片：每張停約兩秒再換下一張 */
+@keyframes sc-reel {
+  0%,   16%  { transform: translateY(0); }
+  20%,  36%  { transform: translateY(-20%); }
+  40%,  56%  { transform: translateY(-40%); }
+  60%,  76%  { transform: translateY(-60%); }
+  80%, 100%  { transform: translateY(-80%); }
+}
+@keyframes sc-signal {
+  0%, 70%   { opacity: 1; }
+  75%, 85%, 95% { opacity: .25; }
+  80%, 90%, 100% { opacity: 1; }
+}
+@keyframes sc-shimmer {
+  0%, 100% { opacity: .85; }
+  50%      { opacity: 1; }
+}
+@keyframes sc-car {
+  0%        { transform: translateX(-34vw); opacity: 0; }
+  8%        { opacity: 1; }
+  70%       { opacity: 1; }
+  100%      { transform: translateX(130vw); opacity: 0; }
+}
+@keyframes sc-car-back {
+  0%        { transform: translateX(130vw); opacity: 0; }
+  8%        { opacity: 1; }
+  70%       { opacity: 1; }
+  100%      { transform: translateX(-42vw); opacity: 0; }
+}
+@keyframes ped-right {
+  from { transform: translateX(-16vw); }
+  to   { transform: translateX(116vw); }
+}
+@keyframes ped-left {
+  from { transform: translateX(116vw); }
+  to   { transform: translateX(-16vw); }
+}
+@keyframes ped-step {
+  from { transform: translateY(0)     scaleX(1); }
+  to   { transform: translateY(-2.5%) scaleX(.94); }
+}
+@keyframes sc-rain-a { to { transform: skewX(-11deg) translateY(52px); } }
+@keyframes sc-rain-b { to { transform: skewX(-11deg) translateY(37px); } }
+@keyframes sc-tick { to { transform: translateX(-50%); } }
+
 @media (prefers-reduced-motion: no-preference) {
   .gate-torii { animation: gate-pulse 3.4s ease-in-out infinite; }
   .gate-title::before { animation: gate-glitch 5.5s steps(1, end) infinite; }
   .gate-title::after  { animation: gate-glitch-alt 5.5s steps(1, end) infinite; }
+
+  .sc-sign-1 { animation: sc-flicker 9s   steps(1, end) infinite; }
+  .sc-sign-2 { animation: sc-flicker 6.5s steps(1, end) infinite .8s; }
+  .sc-sign-3 { animation: sc-flicker 11s  steps(1, end) infinite 2s; }
+  .sc-sign-4 { animation: sc-flicker 7.5s steps(1, end) infinite 3.4s; }
+
+  .sc-eq i { animation: sc-eq .7s ease-in-out infinite alternate; }
+  .sc-eq i:nth-child(1) { animation-duration: .52s; }
+  .sc-eq i:nth-child(2) { animation-duration: .78s; animation-delay: -.2s; }
+  .sc-eq i:nth-child(3) { animation-duration: .44s; animation-delay: -.35s; }
+  .sc-eq i:nth-child(4) { animation-duration: .92s; animation-delay: -.1s; }
+  .sc-eq i:nth-child(5) { animation-duration: .61s; animation-delay: -.5s; }
+  .sc-eq i:nth-child(6) { animation-duration: .83s; animation-delay: -.28s; }
+  .sc-eq i:nth-child(7) { animation-duration: .49s; animation-delay: -.66s; }
+
+  .sc-reel { animation: sc-reel 14s ease-in-out infinite; }
+  .sc-signal svg { animation: sc-signal 6s steps(1, end) infinite; }
+  .sc-reflect { animation: sc-shimmer 7s ease-in-out infinite; }
+
+  .sc-car-1 { animation: sc-car 4.2s cubic-bezier(.4,0,.6,1) infinite 1.2s; }
+  .sc-car-2 { animation: sc-car-back 3.4s cubic-bezier(.4,0,.6,1) infinite 3.6s; }
+  .sc-car-3 { animation: sc-car 5.6s cubic-bezier(.4,0,.6,1) infinite 6.4s; }
+
+  .ped { animation-name: ped-right; animation-timing-function: linear; animation-iteration-count: infinite; }
+  .ped:nth-child(even) { animation-name: ped-left; }
+  .ped i { animation: ped-step .48s ease-in-out infinite alternate; }
+  .ped:nth-child(3n) i   { animation-duration: .57s; }
+  .ped:nth-child(3n+1) i { animation-duration: .43s; }
+
+  .sc-rain-a { animation: sc-rain-a .55s linear infinite; }
+  .sc-rain-b { animation: sc-rain-b .78s linear infinite; }
+
+  .sc-tick { animation: sc-tick 26s linear infinite; }
 }
 
 /* 窄螢幕：kicker 的寬字距會斷成兩行，收緊以維持單行 */
 @media (max-width: 400px) {
   .gate-kicker { font-size: .56rem; letter-spacing: .13em; }
+  .sc-eq { display: none; }        /* 這個寬度下小看板會壓到招牌 */
+}
+
+/* 寬螢幕：看板移離正中央，才不會壓在鳥居與標題上（真正的大螢幕本來
+   也是掛在路口一側的樓上，不會正對著你） */
+@media (min-width: 820px) {
+  .sc-board { left: 63%; top: 7%; width: min(28vw, 330px); }
+}
+
+/* 橫向或矮螢幕：垂直空間不夠，收掉鳥居並壓低文字，按鈕才不會被路面吃掉 */
+@media (max-height: 560px) {
+  .gate-torii { display: none; }
+  .gate-title { font-size: clamp(2.6rem, 11vw, 4rem); }
+  .gate-sub { font-size: .8rem; }
+  .gate-rule { margin: 12px auto; }
+  .gate-enter { padding: 11px 30px; }
+  .sc-board { left: 22%; top: 5%; width: min(26vw, 200px); }
+  .sc-crowd { height: 34%; }
 }
