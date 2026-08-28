@@ -94,10 +94,22 @@ a { color: var(--primary); }
 .lock-foot { margin: 16px 0 0; font-size: .7rem; color: var(--on-surface-variant); opacity: .75; }
 
 /* ---------- 版面 ---------- */
+/* 這個 app 是照手機寬度設計的。桌機上若讓它撐滿整個視窗，210px 高的主視覺
+   會被拉成 1440×210（6.86:1，原圖只有 2.31:1），照片等於只剩中間一條；
+   行距與底部分頁列也會散開。因此內容一律收成一欄置中。 */
+#app { max-width: 560px; margin: 0 auto; }
 #view { padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 16px); }
 
+/* 寬螢幕上把欄外襯深一階，這一欄才像是刻意的版面而不是沒撐開 */
+@media (min-width: 620px) {
+  html, body { background: var(--surface-variant); }
+  #app { background: var(--bg); min-height: 100vh; }
+  #tabs { border-left: 1px solid var(--surface-variant); border-right: 1px solid var(--surface-variant); }
+}
+
 #tabs {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  position: fixed; left: 50%; right: auto; bottom: 0; z-index: 50;
+  width: 100%; max-width: 560px; transform: translateX(-50%);
   display: flex; background: var(--surface);
   border-top: 1px solid var(--surface-variant);
   padding-bottom: env(safe-area-inset-bottom);
@@ -111,8 +123,8 @@ a { color: var(--primary); }
 .tab[aria-current="page"] { color: var(--primary); font-weight: 700; }
 
 /* ---------- 主視覺 ---------- */
-.hero { position: relative; height: 210px; overflow: hidden; }
-.hero.small { height: 150px; }
+.hero { position: relative; aspect-ratio: 39 / 21; overflow: hidden; }
+.hero.small { aspect-ratio: 179 / 75; }
 /* 有照片時是 <img>，沒有照片時是漸層的 <div class="noimg">，兩者都要撐滿 */
 .hero img, .hero .noimg { width: 100%; height: 100%; object-fit: cover; display: block; }
 /* 無實景照也找不到合適授權圖的景點：手繪風格插畫置中於暖色底 */
@@ -211,7 +223,7 @@ details.exp .body { padding: 0 16px 16px; }
 }
 .stop .body { flex: 1; min-width: 0; }
 .stop img, .stop .noimg {
-  width: 100%; height: 92px; object-fit: cover; border-radius: 12px; display: block;
+  width: 100%; aspect-ratio: 67 / 23; object-fit: cover; border-radius: 12px; display: block;
   background: var(--surface-variant);
 }
 
@@ -295,7 +307,7 @@ details.exp .body { padding: 0 16px 16px; }
 .credit { padding: 6px 20px 0; font-size: .72rem; color: var(--on-surface-variant); }
 
 /* ============ 主視覺插畫 ============ */
-.hero.illus { height: 210px; background: #F3D9C8; }
+.hero.illus { background: #F3D9C8; }
 .hero.illus img { object-position: center 38%; }
 /* 插畫底部是淺色波紋，需要比照片更深的漸層才壓得住白字 */
 .hero.illus .scrim {
