@@ -61,6 +61,28 @@ def spots(trip):
             yield day, stop, stop['spot']
 
 
+def hhmm(t):
+    h, m = t.split(':')
+    return int(h) * 60 + int(m)
+
+
+def clock(x):
+    return '%02d:%02d' % (x // 60, x % 60)
+
+
+def stay_minutes(s):
+    """把「1.5 小時」「40 分」轉成分鐘；「全日」「住宿」這類回 None 表示不參與檢查。"""
+    if not s:
+        return None
+    m = re.search(r'([\d.]+)\s*小時', s)
+    if m:
+        return int(float(m.group(1)) * 60)
+    m = re.search(r'(\d+)\s*分', s)
+    if m:
+        return int(m.group(1))
+    return None
+
+
 def validate(trip):
     """取代原本 Robolectric 測試中的資料一致性檢查。"""
     problems, ids = [], []
@@ -69,6 +91,8 @@ def validate(trip):
         for field in ('id', 'nameZh', 'nameJa', 'hours', 'stay', 'area'):
             if not sp.get(field):
                 problems.append(f"{sp.get('id', '?')} 缺少 {field}")
+        if sp.get('tier') not in ('A', 'B', 'C'):
+            problems.append(f"{sp.get('id', '?')} 的 tier 必須是 A／B／C，目前是 {sp.get('tier')!r}")
         if not (20 < sp.get('lat', 0) and 120 < sp.get('lng', 0)):
             problems.append(f"{sp['id']} 座標不合理")
         if not sp.get('notes'):
@@ -81,9 +105,54 @@ def validate(trip):
     check_ids = [c['id'] for c in trip['checklist']]
     if set(check_ids) & set(ids):
         problems.append('清單 id 與景點 id 衝突')
+
+    # 排班可行性：上一站的停留＋車程不能超過下一站的抵達時間。
+    # 這類錯誤靠肉眼看不出來——Day 8 曾把機場抵達寫成 12:45，實際最早 13:40。
+    for day in trip['days']:
+        st = day['stops']
+        for i in range(len(st) - 1):
+            a, b = st[i], st[i + 1]
+            hold = stay_minutes(a['spot'].get('stay'))
+            ride = (b.get('leg') or {}).get('minutes')
+            if hold is None or ride is None:
+                continue
+            earliest = hhmm(a['time']) + hold + ride
+            if earliest > hhmm(b['time']):
+                problems.append(
+                    'Day %d %s 停留 %d 分＋車程 %d 分，最早 %s 才到 %s，但排 %s'
+                    % (day['n'], a['spot']['nameZh'], hold, ride,
+                       clock(earliest), b['spot']['nameZh'], b['time']))
+        declared = day.get('moveMinutes')
+        actual = sum((s.get('leg') or {}).get('minutes', 0) for s in st)
+        if declared is not None and declared != actual:
+            problems.append('Day %d moveMinutes 宣告 %d，實際 %d' % (day['n'], declared, actual))
+
     if problems:
         sys.exit('資料檢查未通過:\n  ' + '\n  '.join(problems))
     return len(ids)
+
+
+def derive_leave_times(trip):
+    """反推每站的最晚離開時間 = 下一站抵達時間 − 該段車程。
+
+    景點若自帶 mustLeaveBy（閉園、末班車這類硬限制）就以它為準。
+    """
+    n = 0
+    for day in trip['days']:
+        st = day['stops']
+        for i, stop in enumerate(st):
+            sp = stop['spot']
+            if sp.get('mustLeaveBy'):
+                n += 1
+                continue
+            if i + 1 >= len(st):
+                continue
+            ride = (st[i + 1].get('leg') or {}).get('minutes')
+            if ride is None:
+                continue
+            sp['mustLeaveBy'] = clock(hhmm(st[i + 1]['time']) - ride)
+            n += 1
+    return n
 
 
 def main():
@@ -100,6 +169,7 @@ def main():
     passphrase = args.passphrase or make_passphrase()
     trip = json.load(open(DATA, encoding='utf-8'))
     n_spots = validate(trip)
+    n_leave = derive_leave_times(trip)
 
     # ---- 分類標籤與地圖連結 ----
     # catLabel 存成一份對照表而非每個景點複製一次；地圖用日文地標名而非座標，
@@ -158,6 +228,7 @@ def main():
             f.write(passphrase + '\n')
 
     print('資料檢查 : %d 個景點、%d 個 CSS class 全部通過' % (n_spots, n_cls))
+    print('最晚離開 : %d 站已標定' % n_leave)
     print('明文     : %d bytes' % len(plaintext))
     print('密文     : %d bytes' % len(ct))
     print('照片     : %d 張 -> docs/p/' % copied)

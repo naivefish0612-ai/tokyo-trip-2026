@@ -215,6 +215,16 @@ function ring(done, total) {
 function pill(text, bg, fg) {
   return el('span', { class: 'pill', text: text, style: 'background:' + bg + ';color:' + fg });
 }
+/** 行程重要度。A 已訂或不可重來、B 重點、C 順路可捨——趕時間時從 C 開始砍。 */
+var TIERS = {
+  A: { label: 'A 必訪', bg: 'color-mix(in srgb, var(--secondary) 18%, transparent)', fg: 'var(--secondary)' },
+  B: { label: 'B 重點', bg: 'color-mix(in srgb, var(--primary) 14%, transparent)', fg: 'var(--primary)' },
+  C: { label: 'C 可捨', bg: 'var(--surface-variant)', fg: 'var(--on-surface-variant)' }
+};
+function tierPill(tier) {
+  var t = TIERS[tier];
+  return t ? pill(t.label, t.bg, t.fg) : null;
+}
 /** 有色系圖示的提示清單。取代先前用「！」「◆」等字元當項目符號的做法。 */
 function noteList(items, kind) {
   var k = KIND[kind] || KIND.note;
@@ -396,7 +406,14 @@ function viewDay(n) {
       el('div', { class: 'body' }, [
         photoEl(st.spot),
         el('div', { style: 'font-weight:700;margin-top:6px', text: st.spot.nameZh }),
-        el('div', { style: 'font-size:.78rem;color:var(--on-surface-variant)', text: st.spot.nameJa + '　停留 ' + st.spot.stay })
+        el('div', { style: 'font-size:.78rem;color:var(--on-surface-variant)', text: st.spot.nameJa + '　停留 ' + st.spot.stay }),
+        el('div', { style: 'margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap' }, [
+          tierPill(st.spot.tier),
+          st.spot.mustLeaveBy ? el('span', {
+            style: 'font-size:.72rem;color:var(--on-surface-variant)',
+            text: '最晚離開 ' + st.spot.mustLeaveBy
+          }) : null
+        ])
       ])
     ]));
   });
@@ -453,7 +470,10 @@ function viewSpot(id) {
   }, [
     photoEl(spot), el('div', { class: 'scrim' }),
     el('div', { class: 'cap' }, [el('h2', { text: spot.nameJa }), el('p', { text: spot.kana })]),
-    day ? el('div', { class: 'corner' }, [pill('Day ' + day.n + '・' + day.date, 'rgba(0,0,0,.45)', '#fff')]) : null
+    el('div', { class: 'corner' }, [
+      day ? pill('Day ' + day.n + '・' + day.date, 'rgba(0,0,0,.45)', '#fff') : null,
+      tierPill(spot.tier)
+    ])
   ]));
 
   var acts = [
@@ -470,6 +490,7 @@ function viewSpot(id) {
     { icon: ICON.clock, label: '時間', value: spot.hours, color: 'var(--primary)' },
     { icon: ICON.yen, label: '費用', value: spot.price, color: 'var(--eat)' },
     { icon: ICON.hourglass, label: '停留', value: spot.stay, color: 'var(--primary)' },
+    { icon: ICON.alert, label: '最晚離開', value: spot.mustLeaveBy, color: 'var(--secondary)' },
     { icon: ICON.closed, label: '公休', value: spot.closed, color: 'var(--secondary)' },
     { icon: ICON.ticket, label: '預約', value: spot.booking, color: 'var(--tertiary)' }
   ])]));
@@ -493,7 +514,8 @@ function viewSpots() {
   TRIP.days.forEach(function (d) {
     d.stops.forEach(function (s) { if (!seen[s.spot.id]) { seen[s.spot.id] = 1; all.push(s.spot); } });
   });
-  var cats = [{ k: 'ALL', l: '全部' }, { k: 'FAV', l: '收藏' }];
+  var cats = [{ k: 'ALL', l: '全部' }, { k: 'FAV', l: '收藏' },
+    { k: 'T:A', l: 'A 必訪' }, { k: 'T:B', l: 'B 重點' }, { k: 'T:C', l: 'C 可捨' }];
   var seenCat = {};
   all.forEach(function (s) { if (!seenCat[s.cat]) { seenCat[s.cat] = 1; cats.push({ k: s.cat, l: s.catLabel }); } });
 
@@ -505,7 +527,9 @@ function viewSpots() {
     var q = spotsState.q.trim().toLowerCase();
     var out = all.filter(function (s) {
       if (spotsState.cat === 'FAV' && !Store.isFav(s.id)) return false;
-      if (spotsState.cat !== 'ALL' && spotsState.cat !== 'FAV' && s.cat !== spotsState.cat) return false;
+      if (spotsState.cat.indexOf('T:') === 0 && s.tier !== spotsState.cat.slice(2)) return false;
+      if (spotsState.cat !== 'ALL' && spotsState.cat !== 'FAV' && spotsState.cat.indexOf('T:') !== 0
+          && s.cat !== spotsState.cat) return false;
       if (!q) return true;
       return (s.nameZh + ' ' + s.nameJa + ' ' + s.kana + ' ' + s.area).toLowerCase().indexOf(q) >= 0;
     });
@@ -518,7 +542,8 @@ function viewSpots() {
           el('div', { class: 'meta' }, [
             el('b', { text: s.nameZh }),
             el('small', { text: s.nameJa + '　' + s.area }),
-            el('div', { style: 'margin-top:4px' }, [
+            el('div', { style: 'margin-top:4px;display:flex;gap:6px;flex-wrap:wrap' }, [
+              tierPill(s.tier),
               pill(s.catLabel, 'var(--surface-variant)', 'var(--on-surface-variant)')
             ])
           ]),

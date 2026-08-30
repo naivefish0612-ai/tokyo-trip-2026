@@ -15,3 +15,8 @@ web/.passphrase
 
 # 行程資料為明文，且 repo 為公開
 trip-data.json
+
+# 選配的視覺驗證工具（見 README），不進版控
+node_modules/
+package.json
+package-lock.json
