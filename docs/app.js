@@ -88,7 +88,8 @@ var KIND = {
   eat:   { icon: ICON.food,  color: 'var(--eat)',      label: '必吃必買' },
   warn:  { icon: ICON.warn,  color: 'var(--secondary)', label: '注意與避雷' },
   tip:   { icon: ICON.bulb,  color: 'var(--tertiary)', label: '今日小訣竅' },
-  alert: { icon: ICON.alert, color: 'var(--secondary)', label: '今日提醒' }
+  alert: { icon: ICON.alert, color: 'var(--secondary)', label: '今日提醒' },
+  fork:  { icon: ICON.nav,   color: 'var(--primary)',  label: '今日分岔點' }
 };
 
 /* ---------- 本機狀態（打卡／收藏） ---------- */
@@ -397,6 +398,17 @@ function viewDay(n) {
   ]));
 
   if (d.alerts.length) frag.appendChild(expandable('alert', d.alerts.length, [noteList(d.alerts, 'alert')], true));
+
+  // 排不下的東西不預先砍掉，改成當天到了現場才決定的分岔點。
+  if (d.forks && d.forks.length) {
+    frag.appendChild(expandable('fork', d.forks.length, d.forks.reduce(function (acc, f) {
+      acc.push(el('div', {
+        style: 'font-weight:700;margin-top:10px', text: f.at + '　' + f.title
+      }));
+      acc.push(noteList(f.options, 'fork'));
+      return acc;
+    }, []), true));
+  }
 
   var tl = el('div', { class: 'timeline' });
   d.stops.forEach(function (st) {
