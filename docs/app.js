@@ -309,7 +309,11 @@ function viewHome() {
     el('div', { class: 'cap' }, [el('h1', { text: TRIP.title }), el('p', { text: TRIP.subtitle })])
   ]));
 
-  frag.appendChild(el('div', { class: 'stats' }, [
+  var main = el('div', { class: 'split-main' });
+  var side = el('div', { class: 'split-side' });
+  frag.appendChild(el('div', { class: 'split' }, [main, side]));
+
+  main.appendChild(el('div', { class: 'stats' }, [
     el('div', { class: 'stat tap', onclick: function () { go('#/checklist'); } },
       [ring(done, ids.length), el('span', { text: '打卡' })]),
     el('div', { class: 'stat' },
@@ -318,17 +322,20 @@ function viewHome() {
       [el('b', { class: 'accent-pink', text: TRIP.hotels.length + ' 家' }), el('span', { text: '住宿' })])
   ]));
 
-  frag.appendChild(card('航班', 'var(--secondary)', [
+  main.appendChild(card('航班', 'var(--secondary)', [
     bullets(['去程　' + TRIP.flightOut, '回程　' + TRIP.flightBack]),
     el('p', { class: 'hint', text: '落地已晚，Day 1 不排景點；Day 8 中午須離開市區。' })
   ]));
 
-  frag.appendChild(el('div', { class: 'section-title', text: '每日行程' }));
+  main.appendChild(el('div', { class: 'section-title', text: '每日行程' }));
+
+  var daysGrid = el('div', { class: 'grid grid-days' });
+  main.appendChild(daysGrid);
 
   TRIP.days.forEach(function (d) {
     var dayIds = d.stops.map(function (s) { return s.spot.id; });
     var last = d.stops[d.stops.length - 1].spot;
-    frag.appendChild(el('div', { class: 'card tap', onclick: function () { go('#/day/' + d.n); } }, [
+    daysGrid.appendChild(el('div', { class: 'card tap', onclick: function () { go('#/day/' + d.n); } }, [
       el('div', { class: 'hero small' }, [
         photoEl(last), el('div', { class: 'scrim' }),
         el('div', { class: 'cap' }, [el('h2', { text: 'DAY ' + d.n + '　' + d.date + ' ' + d.weekday })]),
@@ -356,8 +363,8 @@ function viewHome() {
     ]));
   });
 
-  frag.appendChild(el('div', { class: 'section-title', text: '交通總覽' }));
-  frag.appendChild(card('每日移動時間', 'var(--primary)', TRIP.days.map(function (d) {
+  side.appendChild(el('div', { class: 'section-title', text: '交通總覽' }));
+  side.appendChild(card('每日移動時間', 'var(--primary)', TRIP.days.map(function (d) {
     // 以最長的一天等比縮放，寬度恆落在 (0,100%]
     var pct = Math.max(4, Math.round(d.moveMinutes / maxMove * 100));
     var bar = el('div', { class: 'bar' });
@@ -371,10 +378,10 @@ function viewHome() {
     ]);
   })));
 
-  frag.appendChild(card('住宿', 'var(--tertiary)',
+  side.appendChild(card('住宿', 'var(--tertiary)',
     [bullets(TRIP.hotels.map(function (h) { return h.when + '　' + h.name; }))]));
 
-  frag.appendChild(el('p', {
+  side.appendChild(el('p', {
     class: 'foot',
     text: '資料查證於 2026/8，出發前請以各景點官網為準。照片來源 Wikimedia Commons（CC／公有領域）。'
   }));
@@ -392,16 +399,20 @@ function viewDay(n) {
     el('div', { class: 'cap' }, [el('h2', { text: d.theme }), el('p', { class: 'clamp2', text: d.summary })])
   ]));
 
-  frag.appendChild(el('div', { class: 'scroll-x', style: 'padding:12px 16px 0' }, [
+  var main = el('div', { class: 'split-main' });
+  var side = el('div', { class: 'split-side' });
+  frag.appendChild(el('div', { class: 'split' }, [main, side]));
+
+  main.appendChild(el('div', { class: 'scroll-x', style: 'padding:12px 16px 0' }, [
     pill(d.stops.length + ' 站', 'var(--surface-variant)', 'var(--on-surface-variant)'),
     pill('移動 ' + d.moveMinutes + ' 分', 'color-mix(in srgb, var(--primary) 12%, transparent)', 'var(--primary)')
   ]));
 
-  if (d.alerts.length) frag.appendChild(expandable('alert', d.alerts.length, [noteList(d.alerts, 'alert')], true));
+  if (d.alerts.length) main.appendChild(expandable('alert', d.alerts.length, [noteList(d.alerts, 'alert')], true));
 
   // 排不下的東西不預先砍掉，改成當天到了現場才決定的分岔點。
   if (d.forks && d.forks.length) {
-    frag.appendChild(expandable('fork', d.forks.length, d.forks.reduce(function (acc, f) {
+    main.appendChild(expandable('fork', d.forks.length, d.forks.reduce(function (acc, f) {
       acc.push(el('div', {
         style: 'font-weight:700;margin-top:10px', text: f.at + '　' + f.title
       }));
@@ -428,9 +439,9 @@ function viewDay(n) {
       el('div', { class: 'time', text: st.time }),
       el('div', { class: 'body' }, [
         photoEl(st.spot),
-        el('div', { style: 'font-weight:700;margin-top:6px', text: st.spot.nameZh }),
-        el('div', { style: 'font-size:.78rem;color:var(--on-surface-variant)', text: st.spot.nameJa + '　停留 ' + st.spot.stay }),
-        el('div', { style: 'margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap' }, [
+        el('div', { class: 'stop-name', text: st.spot.nameZh }),
+        el('div', { class: 'stop-sub', text: st.spot.nameJa + '　停留 ' + st.spot.stay }),
+        el('div', { class: 'stop-tags' }, [
           tierPill(st.spot.tier),
           st.spot.mustLeaveBy ? el('span', {
             style: 'font-size:.72rem;color:var(--on-surface-variant)',
@@ -440,14 +451,14 @@ function viewDay(n) {
       ])
     ]));
   });
-  frag.appendChild(el('div', { class: 'card' }, [
+  main.appendChild(el('div', { class: 'card' }, [
     el('div', { class: 'card-pad', style: 'padding-bottom:4px' },
       [el('div', { class: 'card-title', text: '行程動線' })]),
     tl
   ]));
 
-  if (d.tips.length) frag.appendChild(expandable('tip', d.tips.length, [noteList(d.tips, 'tip')]));
-  frag.appendChild(card('今晚住宿', 'var(--primary)', [
+  if (d.tips.length) side.appendChild(expandable('tip', d.tips.length, [noteList(d.tips, 'tip')]));
+  side.appendChild(card('今晚住宿', 'var(--primary)', [
     el('div', { style: 'font-weight:700', text: d.hotelName }),
     el('div', { style: 'font-size:.85rem;color:var(--on-surface-variant)', text: d.hotelNote })
   ]));
@@ -485,7 +496,12 @@ function viewSpot(id) {
 
   var c0 = TRIP.photoCredits[spot.id];
   frag.appendChild(topbar(spot.nameZh, [favBtn, chkBtn]));
-  frag.appendChild(el('div', {
+
+  var main = el('div', { class: 'split-main' });
+  var side = el('div', { class: 'split-side' });
+  frag.appendChild(el('div', { class: 'split' }, [main, side]));
+
+  main.appendChild(el('div', {
     class: 'hero' + (spot.photo ? ' zoomable' : ''),
     onclick: function () {
       if (spot.photo) lightbox(spot.photo, spot.nameZh, c0 ? '照片：' + c0.author + '／' + c0.license : null);
@@ -507,9 +523,9 @@ function viewSpot(id) {
   ];
   if (spot.official) acts.push(el('a', { class: 'btn gold', href: spot.official, target: '_blank', rel: 'noopener noreferrer' },
     [svgIcon(ICON.web), document.createTextNode('官網')]));
-  frag.appendChild(el('div', { class: 'actions' }, acts));
+  main.appendChild(el('div', { class: 'actions' }, acts));
 
-  frag.appendChild(card('重點', 'var(--primary)', [factGrid([
+  main.appendChild(card('重點', 'var(--primary)', [factGrid([
     { icon: ICON.clock, label: '時間', value: spot.hours, color: 'var(--primary)' },
     { icon: ICON.yen, label: '費用', value: spot.price, color: 'var(--eat)' },
     { icon: ICON.hourglass, label: '停留', value: spot.stay, color: 'var(--primary)' },
@@ -518,12 +534,12 @@ function viewSpot(id) {
     { icon: ICON.ticket, label: '預約', value: spot.booking, color: 'var(--tertiary)' }
   ])]));
 
-  if (spot.notes.length) frag.appendChild(expandable('note', spot.notes.length, [noteList(spot.notes, 'note')], true));
-  if (spot.eats.length) frag.appendChild(expandable('eat', spot.eats.length, [noteList(spot.eats, 'eat')]));
-  if (spot.warns.length) frag.appendChild(expandable('warn', spot.warns.length, [noteList(spot.warns, 'warn')]));
+  if (spot.notes.length) side.appendChild(expandable('note', spot.notes.length, [noteList(spot.notes, 'note')], true));
+  if (spot.eats.length) side.appendChild(expandable('eat', spot.eats.length, [noteList(spot.eats, 'eat')]));
+  if (spot.warns.length) side.appendChild(expandable('warn', spot.warns.length, [noteList(spot.warns, 'warn')]));
 
   var c = TRIP.photoCredits[spot.id];
-  if (c) frag.appendChild(el('p', { class: 'credit' }, [
+  if (c) side.appendChild(el('p', { class: 'credit' }, [
     el('a', { href: c.page, target: '_blank', rel: 'noopener noreferrer',
       text: '照片：' + c.author + '／' + c.license + '（Wikimedia Commons）' })
   ]));
@@ -543,7 +559,7 @@ function viewSpots() {
   all.forEach(function (s) { if (!seenCat[s.cat]) { seenCat[s.cat] = 1; cats.push({ k: s.cat, l: s.catLabel }); } });
 
   var frag = document.createDocumentFragment();
-  var list = el('div');
+  var list = el('div', { class: 'grid grid-spots' });
   var countLbl = el('div', { class: 'foot', style: 'padding:6px 20px 0' });
 
   function render() {
@@ -559,7 +575,7 @@ function viewSpots() {
     countLbl.textContent = out.length + ' 個景點';
     list.textContent = '';
     out.forEach(function (s) {
-      list.appendChild(el('div', { class: 'card', style: 'margin:8px 16px' }, [
+      list.appendChild(el('div', { class: 'card spot-card' }, [
         el('div', { class: 'spot-row', style: 'cursor:pointer', onclick: function () { go('#/spot/' + s.id); } }, [
           photoEl(s),
           el('div', { class: 'meta' }, [
@@ -619,6 +635,9 @@ function viewChecklist() {
   paintProgress();
   frag.appendChild(progress);
 
+  var checkGrid = el('div', { class: 'grid grid-check' });
+  frag.appendChild(checkGrid);
+
   groups.forEach(function (g) {
     var body = el('div');
     byGroup[g].forEach(function (it) {
@@ -639,15 +658,17 @@ function viewChecklist() {
       });
       body.appendChild(row);
     });
-    frag.appendChild(el('div', { class: 'card' }, [
+    checkGrid.appendChild(el('div', { class: 'card' }, [
       el('div', { class: 'card-pad', style: 'padding-bottom:0' }, [el('div', { class: 'card-title', text: g })]),
       body
     ]));
   });
 
   frag.appendChild(el('div', { class: 'section-title', text: '必訂票券' }));
+  var bookGrid = el('div', { class: 'grid grid-books' });
+  frag.appendChild(bookGrid);
   TRIP.bookings.forEach(function (b) {
-    frag.appendChild(card(b.name, 'var(--tertiary)', [
+    bookGrid.appendChild(card(b.name, 'var(--tertiary)', [
       el('div', { style: 'font-size:.88rem', text: b.status }),
       el('div', { style: 'font-size:.8rem;color:var(--on-surface-variant)', text: b.note })
     ]));
