@@ -1157,3 +1157,124 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
   #view > .hero, .split-main > .hero { height: min(48vh, 460px); }
   #view > .hero.small, .split-main > .hero.small { height: min(36vh, 320px); }
 }
+
+/* ============================================================
+   今日分岔點
+   ------------------------------------------------------------
+   分岔點是「排不下、留到現場再決定」的取捨，所以不是條列文字，而是畫成一個
+   節點分出數條路徑，而且可以點：選中的那條亮起來、其餘淡出，再點一次退回
+   未決定。選擇存在 localStorage，人在現場點完不會被重新整理洗掉。
+
+   連接線全部用 ::before（主幹）與 ::after（岔出去的支線）畫，沒有額外節點：
+     手機   主幹在左側直下，每張卡片橫向岔出去
+     桌機   主幹置中往下，再橫向拉成一條軌，各路徑由軌往下接
+   最後一段主幹要收在支線的位置，否則會多出一截穿過最後一張卡片。
+   ============================================================ */
+
+.fork { padding: 12px 0 2px; }
+.fork + .fork {
+  margin-top: 12px; padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--on-surface-variant) 14%, transparent);
+}
+
+.fork-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.fork-at { font-weight: 700; color: var(--primary); font-size: .85rem; }
+.fork-title { font-weight: 700; }
+
+/* 從標題落下、接到主幹頂端的那一小段 */
+.fork-stem {
+  width: 2px; height: 12px; margin-left: 8px;
+  background: var(--surface-variant);
+}
+
+.fork-paths { display: grid; gap: 8px; }
+
+.fork-opt {
+  position: relative; margin-left: 20px;   /* 讓出左邊的主幹 */
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 9px; align-items: start; text-align: left;
+  padding: 11px 13px; border-radius: 14px;
+  border: 1.5px solid var(--surface-variant); background: var(--surface);
+  transition: opacity .18s ease, border-color .18s ease,
+              background-color .18s ease, box-shadow .18s ease;
+}
+.fork-opt:active { transform: scale(.99); }
+.fork-opt:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* 主幹：每張卡片自己畫一段，往下多長出 gap 的高度才接得起來 */
+.fork-opt::before {
+  content: ""; position: absolute; left: -12px; top: 0; bottom: -8px;
+  width: 2px; background: var(--surface-variant);
+}
+/* 最後一段收在支線的高度，不要穿過整張卡片 */
+.fork-opt:last-child::before { bottom: auto; height: 22px; }
+/* 支線：主幹橫過來接到卡片左緣，高度對齊代號徽章的中心 */
+.fork-opt::after {
+  content: ""; position: absolute; left: -12px; top: 22px;
+  width: 12px; height: 2px; background: var(--surface-variant);
+}
+
+.fork-key {
+  width: 22px; height: 22px; border-radius: 7px;
+  display: grid; place-items: center;
+  background: var(--surface-variant); color: var(--on-surface-variant);
+  font-size: .76rem; font-weight: 700;
+}
+.fork-body { font-size: .86rem; line-height: 1.55; }
+.fork-tick { display: none; width: 18px; height: 18px; fill: var(--primary); }
+
+/* 選定的路徑 */
+.fork-opt[aria-checked="true"] {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  box-shadow: var(--shadow);
+}
+.fork-opt[aria-checked="true"] .fork-key { background: var(--primary); color: var(--on-primary); }
+.fork-opt[aria-checked="true"] .fork-tick { display: block; }
+.fork-opt[aria-checked="true"]::before,
+.fork-opt[aria-checked="true"]::after { background: var(--primary); }
+
+/* 已經決定之後，其餘路徑淡出但仍可回頭改。淡到還讀得完，因為當天很可能
+   要再比一次才反悔。 */
+.fork-paths[data-decided="yes"] .fork-opt[aria-checked="false"] { opacity: .55; }
+.fork-paths[data-decided="yes"] .fork-opt[aria-checked="false"]:hover { opacity: .85; }
+
+.fork-foot {
+  display: flex; align-items: center; gap: 10px;
+  margin: 9px 0 0 20px; min-height: 24px;
+}
+.fork-status { font-size: .76rem; color: var(--on-surface-variant); }
+.fork-reset {
+  border: 0; background: none; padding: 3px 9px; border-radius: 9px;
+  font-size: .76rem; font-weight: 600; color: var(--primary);
+}
+.fork-reset:hover { background: var(--surface-variant); }
+
+/* ---------- 桌機：主幹置中，路徑並排比較 ---------- */
+@media (min-width: 1024px) {
+  .fork-head { justify-content: center; }
+  .fork-stem { margin: 0 auto; height: 14px; }
+
+  .fork-h {
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 10px; padding-top: 16px;
+  }
+  .fork-h > .fork-opt { margin-left: 0; }
+
+  /* 由橫軌往下接到每張卡片 */
+  .fork-h > .fork-opt::before,
+  .fork-h > .fork-opt:last-child::before {
+    left: 50%; top: -16px; bottom: auto; height: 16px; margin-left: -1px;
+  }
+  /* 橫軌：頭尾兩張各畫一半，中間的畫滿，合起來剛好收在頭尾的中心 */
+  .fork-h > .fork-opt::after {
+    left: 0; right: 0; top: -16px; width: auto;
+  }
+  .fork-h > .fork-opt:first-child::after { left: 50%; }
+  .fork-h > .fork-opt:last-child::after { right: 50%; }
+  /* 橫軌是共用的，選定時只點亮那條往下的落線；整段軌跟著變色會看起來像是
+     某一段軌屬於某一條路徑。 */
+  .fork-h > .fork-opt[aria-checked="true"]::after { background: var(--surface-variant); }
+
+  .fork-foot { margin-left: 0; justify-content: center; }
+}

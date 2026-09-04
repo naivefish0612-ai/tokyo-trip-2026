@@ -101,6 +101,12 @@ var Store = {
   },
   toggle: function (id) { var v = !this.get(id); this.set(id, v); return v; },
   isFav: function (id) { return this.get('fav_' + id); },
+  /* 分岔點存的不是有／沒有，而是選了哪個代號，所以要另外一組存取 */
+  pick: function (id) { return localStorage.getItem(KEY_PREFIX + id) || ''; },
+  setPick: function (id, v) {
+    if (v) localStorage.setItem(KEY_PREFIX + id, v);
+    else localStorage.removeItem(KEY_PREFIX + id);
+  },
   count: function (ids) { var s = this, n = 0; ids.forEach(function (i) { if (s.get(i)) n++; }); return n; }
 };
 
@@ -294,6 +300,91 @@ function topbar(title, actions) {
   ].concat(actions || []));
 }
 
+/* ---------- 今日分岔點 ----------
+   分岔點是排不下的取捨，要留到當天現場才決定（見 trip-data.json 的 day.forks）。
+   所以它不是條列文字，而是一個節點分出數條路徑：點下去就選定，選中的那條亮起、
+   其餘淡出，再點一次退回未決定。選擇存在 localStorage，人在現場點完之後
+   重新整理、關掉再打開都還在。 */
+
+/** 「A｜內容」拆成代號與內容。沒寫代號就依序補 A、B、C。 */
+function parseForkOption(text, i) {
+  var m = /^\s*([A-Za-z0-9]{1,2})\s*[｜|]\s*([\s\S]+)$/.exec(String(text));
+  if (m) return { key: m[1].toUpperCase(), body: m[2] };
+  return { key: String.fromCharCode(65 + i), body: String(text) };
+}
+
+function forkNode(day, f) {
+  var opts = f.options.map(parseForkOption);
+  var keys = opts.map(function (o) { return o.key; });
+  // 以「第幾天＋時間」當 key：改寫文案不會讓已經做過的選擇跑掉
+  var id = 'fork_d' + day.n + '_' + String(f.at).replace(/[^0-9]/g, '');
+
+  var picked = Store.pick(id);
+  if (keys.indexOf(picked) < 0) picked = '';   // 選項改過，舊的選擇就不算數
+
+  var paths = el('div', {
+    class: 'fork-paths fork-h', role: 'radiogroup',
+    'aria-label': f.at + '　' + f.title
+  });
+  paths.style.setProperty('--n', String(opts.length));
+  // 分成太多條就排不下，退回直向堆疊
+  if (opts.length > 4) paths.classList.remove('fork-h');
+
+  var status = el('span', { class: 'fork-status' });
+  var reset = el('button', { class: 'fork-reset', type: 'button', text: '重選' });
+  var btns = [];
+
+  function paint() {
+    btns.forEach(function (b, i) {
+      var on = picked === keys[i];
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
+      // roving tabindex：整組在 Tab 順序裡只佔一格
+      b.tabIndex = (on || (!picked && i === 0)) ? 0 : -1;
+    });
+    paths.setAttribute('data-decided', picked ? 'yes' : 'no');
+    status.textContent = picked
+      ? '已選 ' + picked + '　其餘路徑先擱著'
+      : '尚未決定　到現場再點';
+    reset.hidden = !picked;
+  }
+
+  function commit(v) { picked = v; Store.setPick(id, v); paint(); }
+
+  opts.forEach(function (o, i) {
+    var b = el('button', { class: 'fork-opt', type: 'button', role: 'radio' }, [
+      el('span', { class: 'fork-key', text: o.key }),
+      el('span', { class: 'fork-body', text: o.body }),
+      svgIcon(ICON.check, 'fork-tick')
+    ]);
+    // 點已選的那條就退回未決定：當天狀況會變，要能反悔
+    b.addEventListener('click', function () { commit(picked === keys[i] ? '' : keys[i]); });
+    b.addEventListener('keydown', function (e) {
+      var step = (e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1
+               : (e.key === 'ArrowLeft' || e.key === 'ArrowUp') ? -1 : 0;
+      if (!step) return;
+      e.preventDefault();
+      var n = (i + step + btns.length) % btns.length;
+      commit(keys[n]);
+      btns[n].focus();
+    });
+    btns.push(b);
+    paths.appendChild(b);
+  });
+
+  reset.addEventListener('click', function () { commit(''); });
+  paint();
+
+  return el('div', { class: 'fork' }, [
+    el('div', { class: 'fork-head' }, [
+      el('span', { class: 'fork-at', text: f.at }),
+      el('span', { class: 'fork-title', text: f.title })
+    ]),
+    el('div', { class: 'fork-stem', 'aria-hidden': 'true' }),
+    paths,
+    el('div', { class: 'fork-foot' }, [status, reset])
+  ]);
+}
+
 /* ---------- 畫面：首頁 ---------- */
 function viewHome() {
   var ids = [];
@@ -412,13 +503,9 @@ function viewDay(n) {
 
   // 排不下的東西不預先砍掉，改成當天到了現場才決定的分岔點。
   if (d.forks && d.forks.length) {
-    main.appendChild(expandable('fork', d.forks.length, d.forks.reduce(function (acc, f) {
-      acc.push(el('div', {
-        style: 'font-weight:700;margin-top:10px', text: f.at + '　' + f.title
-      }));
-      acc.push(noteList(f.options, 'fork'));
-      return acc;
-    }, []), true));
+    main.appendChild(expandable('fork', d.forks.length, d.forks.map(function (f) {
+      return forkNode(d, f);
+    }), true));
   }
 
   var tl = el('div', { class: 'timeline' });
