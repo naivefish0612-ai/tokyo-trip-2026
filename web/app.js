@@ -362,9 +362,16 @@ function forkNode(day, f) {
   function commit(v) { picked = v; Store.setPick(id, v); paint(); }
 
   opts.forEach(function (o, i) {
+    // 手機上每條路徑都是一整段字，很難掃。把冒號前的短標題抽成粗體第一行，
+    // 這樣 A／B／C 在不細讀的情況下也分得出來。
+    var cut = o.body.indexOf('：');
+    var lead = (cut > 0 && cut <= 24) ? o.body.slice(0, cut) : '';
     var b = el('button', { class: 'fork-opt', type: 'button', role: 'radio' }, [
       el('span', { class: 'fork-key', text: o.key }),
-      el('span', { class: 'fork-body', text: o.body }),
+      el('span', { class: 'fork-body' }, [
+        lead ? el('span', { class: 'fork-lead', text: lead }) : null,
+        el('span', { class: 'fork-text', text: lead ? o.body.slice(cut + 1) : o.body })
+      ]),
       svgIcon(ICON.check, 'fork-tick')
     ]);
     // 點已選的那條就退回未決定：當天狀況會變，要能反悔
@@ -514,9 +521,10 @@ function viewDay(n) {
 
   // 排不下的東西不預先砍掉，改成當天到了現場才決定的分岔點。
   if (d.forks && d.forks.length) {
+    // 預設收起：分岔點是現場才用的東西，攤開會把當天動線推到好幾個畫面之外。
     main.appendChild(expandable('fork', d.forks.length, d.forks.map(function (f) {
       return forkNode(d, f);
-    }), true));
+    })));
   }
 
   var tl = el('div', { class: 'timeline' });

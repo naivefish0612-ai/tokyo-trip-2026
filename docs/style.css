@@ -1221,6 +1221,8 @@ details.exp > summary:active { background: color-mix(in srgb, var(--accent) 8%, 
   font-size: .76rem; font-weight: 700;
 }
 .fork-body { font-size: .86rem; line-height: 1.55; }
+.fork-lead { display: block; font-weight: 700; color: var(--on-surface); margin-bottom: 3px; }
+.fork-text { display: block; }
 .fork-tick { display: none; width: 18px; height: 18px; fill: var(--primary); }
 
 /* 選定的路徑 */
