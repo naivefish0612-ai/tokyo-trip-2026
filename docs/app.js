@@ -260,6 +260,15 @@ function noteList(items, kind) {
   return el('ul', { class: 'notes' }, items.map(function (t) {
     var ic = svgIcon(k.icon, 'ni');
     ic.style.setProperty('fill', k.color);
+    // 提醒常是「主詞：內容」，在手機上一條就是一整段。把冒號前的短主詞抽成
+    // 粗體第一行，才掃得出哪一條講的是哪一站。只對 alert 做，其餘筆記照舊。
+    var cut = kind === 'alert' ? t.indexOf('：') : -1;
+    if (cut > 0 && cut <= 20) {
+      return el('li', {}, [ic, el('span', {}, [
+        el('span', { class: 'note-lead', text: t.slice(0, cut) }),
+        el('span', { text: t.slice(cut + 1) })
+      ])]);
+    }
     return el('li', {}, [ic, el('span', { text: t })]);
   }));
 }

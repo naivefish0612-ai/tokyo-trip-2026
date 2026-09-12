@@ -345,6 +345,7 @@ ul.notes li {
   padding: 7px 0; font-size: .88rem; line-height: 1.6;
 }
 ul.notes li + li { border-top: 1px solid color-mix(in srgb, var(--on-surface-variant) 14%, transparent); }
+.note-lead { display: block; font-weight: 700; margin-bottom: 2px; }
 .ni { width: 17px; height: 17px; flex: none; margin-top: 3px; }
 
 /* ============ 重點格線 ============ */
