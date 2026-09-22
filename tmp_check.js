@@ -1,0 +1,21 @@
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch();
+  const p = await b.newPage({ viewport: { width: 420, height: 900 } });
+  const errs = [];
+  p.on('pageerror', e => errs.push('pageerror: ' + e.message));
+  p.on('console', m => { if (m.type() === 'error') errs.push('console: ' + m.text()); });
+  await p.goto('http://localhost:8731/');
+  await p.click('#gate-enter');
+  await p.fill('#pass', 'xjLCoqm9Us8PsF3t');
+  await p.click('#unlock');
+  await p.waitForSelector('#app:not([hidden])');
+  await p.evaluate(() => location.hash = '#/day/7');
+  await p.waitForTimeout(800);
+  const txt = await p.evaluate(() => document.body.innerText);
+  console.log(txt.split('\n').filter(l => /21:|22:|23:|燈光秀|Scramble/.test(l)).slice(0, 40).join('\n'));
+  await p.screenshot({ path: '/tmp/d7.png', fullPage: true });
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  console.log('---\noverflow:', overflow, '\nerrors:', errs.length ? errs : 'none');
+  await b.close();
+})();
