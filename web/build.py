@@ -97,6 +97,10 @@ def validate(trip):
             problems.append(f"{sp['id']} 座標不合理")
         if not sp.get('notes'):
             problems.append(f"{sp['id']} 沒有在地筆記")
+        # app.js 直接讀 .length，欄位缺了會丟 TypeError，整個景點詳情頁變空白。
+        for field in ('notes', 'eats', 'warns'):
+            if not isinstance(sp.get(field), list):
+                problems.append(f"{sp['id']} 的 {field} 必須是陣列（可空），目前缺少")
         if sp.get('photo') and not os.path.exists(os.path.join(PHOTOS_SRC, sp['photo'])):
             problems.append(f"{sp['id']} 找不到照片 {sp['photo']}")
     dupes = {i for i in ids if ids.count(i) > 1}
