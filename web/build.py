@@ -18,6 +18,7 @@ import os
 import re
 import secrets
 import shutil
+import subprocess
 import sys
 import urllib.parse
 
@@ -53,6 +54,22 @@ def check_css_classes():
     if missing:
         sys.exit('CSS 缺少這些 class（會導致版面跑掉）: ' + ', '.join(missing))
     return len(used)
+
+
+def check_js_syntax():
+    """app.js 語法一壞，整個腳本不執行——畫面停在入口頁、按「起動」毫無反應。
+
+    2026-09-22 就是這樣上線的：ILLUSTRATIONS 少了一個逗號，build 全綠、
+    資料檢查也全過，但站台是死的。有 node 就用 node --check 擋下來。
+    """
+    node = shutil.which('node')
+    if not node:
+        return 'node 不在，略過'
+    r = subprocess.run([node, '--check', os.path.join(WEB, 'app.js')],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        sys.exit('app.js 語法檢查失敗（站台會整個打不開）:\n' + (r.stderr or r.stdout))
+    return 'node --check 通過'
 
 
 def spots(trip):
@@ -164,6 +181,7 @@ def main():
     ap.add_argument('--passphrase')
     args = ap.parse_args()
 
+    n_js = check_js_syntax()
     n_cls = check_css_classes()
     if not os.path.exists(DATA):
         sys.exit('找不到 %s。這個檔案不在版控內，需從原機器複製過來。' % DATA)
@@ -232,6 +250,7 @@ def main():
             f.write(passphrase + '\n')
 
     print('資料檢查 : %d 個景點、%d 個 CSS class 全部通過' % (n_spots, n_cls))
+    print('JS 語法  : %s' % n_js)
     print('最晚離開 : %d 站已標定' % n_leave)
     print('明文     : %d bytes' % len(plaintext))
     print('密文     : %d bytes' % len(ct))
