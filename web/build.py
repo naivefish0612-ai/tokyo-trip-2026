@@ -241,6 +241,22 @@ def main():
 
     for name in ('index.html', 'style.css', 'app.js', 'hero.svg'):
         shutil.copy2(os.path.join(WEB, name), os.path.join(DOCS, name))
+
+    # ---- 快取破除：app.js／style.css 帶上內容雜湊 ----
+    # 檔名固定時瀏覽器會沿用舊檔：2026-09-22 出貨過一版語法壞掉的 app.js，
+    # 修好之後一般視窗還是載到舊的（無痕模式才正常）。index.html 每次重寫，
+    # 所以把版本號寫在它的引用上，內容一變使用者就一定會重新抓。
+    stamps = {}
+    for name in ('app.js', 'style.css'):
+        with open(os.path.join(DOCS, name), 'rb') as f:
+            stamps[name] = hashlib.sha256(f.read()).hexdigest()[:8]
+    idx_path = os.path.join(DOCS, 'index.html')
+    with open(idx_path, encoding='utf-8') as f:
+        idx = f.read()
+    idx = idx.replace('src="app.js"', 'src="app.js?v=%s"' % stamps['app.js'])
+    idx = idx.replace('href="style.css"', 'href="style.css?v=%s"' % stamps['style.css'])
+    with open(idx_path, 'w', encoding='utf-8') as f:
+        f.write(idx)
     open(os.path.join(DOCS, '.nojekyll'), 'w').close()
     with open(os.path.join(DOCS, 'robots.txt'), 'w') as f:
         f.write('User-agent: *\nDisallow: /\n')
@@ -251,6 +267,7 @@ def main():
 
     print('資料檢查 : %d 個景點、%d 個 CSS class 全部通過' % (n_spots, n_cls))
     print('JS 語法  : %s' % n_js)
+    print('快取版本 : app.js?v=%s、style.css?v=%s' % (stamps['app.js'], stamps['style.css']))
     print('最晚離開 : %d 站已標定' % n_leave)
     print('明文     : %d bytes' % len(plaintext))
     print('密文     : %d bytes' % len(ct))
